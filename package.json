@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "bash ./scripts/build.sh",
+    "build": "next build",
     "dev": "npx next dev --webpack --port 5001",
     "dev:backend": "cd python-backend && python main.py",
     "dev:all": "concurrently -n fe,be -c blue,green \"pnpm dev\" \"pnpm dev:backend\"",
