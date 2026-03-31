@@ -1,0 +1,60 @@
+{
+  "processedAt": "2026-03-29T14:23:33.341Z",
+  "dateRange": "2026-03-01 to 2026-03-28",
+  "statistics": {
+    "totalOrders": 3066,
+    "successCount": 3038,
+    "failedCount": 28,
+    "successRate": "99.09%",
+    "failedReasons": {
+      "agentInfoMissing": 0,
+      "notFoundInMap": 28
+    }
+  },
+  "processingDetails": {
+    "agentTeamMapSize": 154,
+    "backupFile": "K:\\CXCC2\\data\\orders_backup_before_team_update.json"
+  },
+  "sampleUpdatedOrders": [
+    {
+      "id": "0001",
+      "agentId": "1096",
+      "agentName": "陈素珍",
+      "oldTeam": "广东升档-诚聚B",
+      "newTeam": "广东升档-诚聚B"
+    },
+    {
+      "id": "0002",
+      "agentId": "1045",
+      "agentName": "林蓉",
+      "oldTeam": "广东升档-如皓",
+      "newTeam": "广东升档-如皓"
+    },
+    {
+      "id": "0003",
+      "agentId": "1043",
+      "agentName": "周荣妹",
+      "oldTeam": "广东升档-如皓",
+      "newTeam": "广东升档-如皓"
+    },
+    {
+      "id": "0004",
+      "agentId": "1044",
+      "agentName": "陈小燕",
+      "oldTeam": "广东升档-如皓",
+      "newTeam": "广东升档-如皓"
+    },
+    {
+      "id": "0005",
+      "agentId": "1095",
+      "agentName": "曾珍妹",
+      "oldTeam": "广东升档-诚聚B",
+      "newTeam": "广东升档-诚聚B"
+    }
+  ],
+  "recommendations": [
+    "定期更新坐席-团队映射关系表",
+    "完善订单数据中的坐席信息",
+    "建立数据质量监控机制"
+  ]
+}

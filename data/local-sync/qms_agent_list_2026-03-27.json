@@ -1,0 +1,11 @@
+{
+  "fetched": 154,
+  "upserted": 154,
+  "localFiles": {
+    "recordings": "K:\\CXCC2\\data\\local-sync\\qms_recording_list_2026-03-27.json",
+    "callLogs": "K:\\CXCC2\\data\\local-sync\\qms_call_log_list_2026-03-27.json",
+    "teams": "K:\\CXCC2\\data\\local-sync\\qms_team_list.json",
+    "agents": "K:\\CXCC2\\data\\local-sync\\qms_agent_list.json",
+    "syncLogs": "K:\\CXCC2\\data\\local-sync\\qms_sync_log.json"
+  }
+}

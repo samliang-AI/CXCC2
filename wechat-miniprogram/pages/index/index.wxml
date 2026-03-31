@@ -1,0 +1,60 @@
+<!-- index.wxml -->
+<view class="container">
+  <!-- 日期选择 -->
+  <view class="date-picker">
+    <picker mode="date" bindchange="bindDateChange" value="{{date}}" start="2026-01-01" end="{{today}}">
+      <view class="row">
+        <text>选择日期：</text>
+        <text class="text">{{date}}</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 错误提示 -->
+  <view wx:if="{{error}}" class="error">
+    <text>{{error}}</text>
+    <view class="btn" bindtap="loadData">重新加载</view>
+  </view>
+
+  <!-- 数据内容 -->
+  <view wx:else>
+    <!-- 数据概览 -->
+    <view class="overview">
+      <view class="overview-item">
+        <text class="overview-label">总呼叫量</text>
+        <text class="overview-value">{{overview.totalCalls}}</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-label">成功量</text>
+        <text class="overview-value">{{overview.successCalls}}</text>
+      </view>
+      <view class="overview-item">
+        <text class="overview-label">质检率</text>
+        <text class="overview-value">{{overview.qualityRate}}%</text>
+      </view>
+    </view>
+
+    <!-- 趋势图表 -->
+    <view class="chart-container">
+      <text class="chart-title">呼叫趋势</text>
+      <canvas canvas-id="trendChart" class="chart"></canvas>
+    </view>
+
+    <!-- 城市排名 -->
+    <view class="ranking">
+      <text class="ranking-title">城市排名</text>
+      <view class="ranking-list">
+        <view class="ranking-item" wx:for="{{cityRanking}}" wx:key="index">
+          <text class="ranking-rank">{{index + 1}}</text>
+          <text class="ranking-name">{{item.cityName}}</text>
+          <text class="ranking-value">{{item.successCalls}} 次</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

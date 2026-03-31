@@ -1,0 +1,48 @@
+<!--pages/team/team.wxml-->
+<view class="container">
+  <!-- 日期选择器 -->
+  <view class="date-picker">
+    <picker mode="date" value="{{date}}" bindchange="bindDateChange">
+      <view class="row">
+        <text>选择日期：</text>
+        <text class="text">{{date}}</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 错误提示 -->
+  <view wx:if="{{error}}" class="error">
+    <text>{{error}}</text>
+  </view>
+
+  <!-- 团队数据列表 -->
+  <view wx:else class="team-list">
+    <view class="table-container">
+      <view class="table-header">
+        <view class="table-cell">排名</view>
+        <view class="table-cell">团队名称</view>
+        <view class="table-cell">坐席人数</view>
+        <view class="table-cell">累计成交量</view>
+        <view class="table-cell">成交目标</view>
+        <view class="table-cell">人均成交量</view>
+        <view class="table-cell">完成率</view>
+        <view class="table-cell">优秀坐席</view>
+      </view>
+      <view wx:for="{{teamData}}" wx:key="teamId" class="table-row">
+        <view class="table-cell">{{index + 1}}</view>
+        <view class="table-cell">{{item.teamName}}</view>
+        <view class="table-cell">{{item.agentCount}}</view>
+        <view class="table-cell">{{item.successCalls}}</view>
+        <view class="table-cell">{{item.agentCount * 20}}</view>
+        <view class="table-cell">{{item.avgSuccessPerAgent}}</view>
+        <view class="table-cell">{{item.successRate}}%</view>
+        <view class="table-cell">0</view>
+      </view>
+    </view>
+  </view>
+</view>

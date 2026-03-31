@@ -1,0 +1,210 @@
+/* index.wxss */
+/* 页面样式 */
+.container {
+  padding: 16rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: #fff;
+  border-radius: 8rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+/* 标题样式 */
+.title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+/* 副标题样式 */
+.subtitle {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 12rpx;
+}
+
+/* 行样式 */
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+/* 列样式 */
+.col {
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.col:last-child {
+  margin-right: 0;
+}
+
+/* 数据概览容器 */
+.overview {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  border-radius: 8rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+/* 数据概览项 */
+.overview-item {
+  flex: 1;
+  text-align: center;
+  padding: 0 16rpx;
+}
+
+.overview-item:not(:last-child) {
+  border-right: 1rpx solid #f0f0f0;
+}
+
+/* 数据标签样式 */
+.overview-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+/* 数据值样式 */
+.overview-value {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 日期选择器样式 */
+.date-picker {
+  margin: 16rpx 0;
+  padding: 16rpx;
+  background-color: #fff;
+  border-radius: 8rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 图表容器样式 */
+.chart-container {
+  background-color: #fff;
+  border-radius: 8rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.chart-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+}
+
+.chart {
+  width: 100%;
+  height: 400rpx;
+}
+
+/* 排名容器 */
+.ranking {
+  background-color: #fff;
+  border-radius: 8rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.ranking-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+}
+
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.ranking-item:last-child {
+  border-bottom: none;
+}
+
+.ranking-rank {
+  width: 48rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #1890ff;
+  margin-right: 16rpx;
+}
+
+.ranking-name {
+  flex: 1;
+  font-size: 24rpx;
+  color: #333;
+}
+
+.ranking-value {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 加载样式 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64rpx 0;
+}
+
+/* 错误提示样式 */
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64rpx 0;
+  color: #ff4d4f;
+}
+
+/* 按钮样式 */
+.btn {
+  display: block;
+  width: 100%;
+  padding: 20rpx;
+  background-color: #1890ff;
+  color: #fff;
+  text-align: center;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  margin-top: 24rpx;
+}
+
+/* 文本样式 */
+.text {
+  font-size: 24rpx;
+  color: #999;
+  line-height: 1.5;
+}

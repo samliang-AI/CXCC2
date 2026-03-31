@@ -1,0 +1,899 @@
+{
+  "timestamp": "2026-03-29T13:30:27.698Z",
+  "totalOrders": 127,
+  "affectedOrders": 127,
+  "averageOriginalDiscount": 30,
+  "totalOriginalDiscount": 3810,
+  "totalUpdatedDiscount": 0,
+  "comparisonData": [
+    {
+      "orderId": "0001",
+      "phone": "18320616477",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0002",
+      "phone": "18218609828",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0003",
+      "phone": "13727765354",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0004",
+      "phone": "17818963581",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0005",
+      "phone": "13622405874",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0006",
+      "phone": "18475470038",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0007",
+      "phone": "18319725196",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0008",
+      "phone": "15119735074",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0009",
+      "phone": "18819871804",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0010",
+      "phone": "13432376403",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0011",
+      "phone": "13692612046",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0012",
+      "phone": "18420270418",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0013",
+      "phone": "17817411820",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0014",
+      "phone": "13450117363",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0015",
+      "phone": "15766095439",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0016",
+      "phone": "13432315330",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0017",
+      "phone": "15976573121",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0018",
+      "phone": "18807644919",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0019",
+      "phone": "15791313060",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0020",
+      "phone": "13929760396",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0021",
+      "phone": "18318294521",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0022",
+      "phone": "19865703823",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0023",
+      "phone": "13727722919",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0024",
+      "phone": "13542327379",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0025",
+      "phone": "17876380825",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0026",
+      "phone": "13929758819",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0027",
+      "phone": "19528689957",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0028",
+      "phone": "15706670040",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0029",
+      "phone": "17820195737",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0030",
+      "phone": "13542333165",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0031",
+      "phone": "13542306684",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0032",
+      "phone": "18319151644",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0033",
+      "phone": "18320685278",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0034",
+      "phone": "13542365680",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0035",
+      "phone": "18475870864",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0036",
+      "phone": "15089553331",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0037",
+      "phone": "13138743605",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0038",
+      "phone": "18319205037",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0039",
+      "phone": "19830027907",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0040",
+      "phone": "15915265045",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0041",
+      "phone": "13534896370",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0042",
+      "phone": "15219903011",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0043",
+      "phone": "18318292662",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0044",
+      "phone": "18898514379",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0045",
+      "phone": "18320614940",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0046",
+      "phone": "18475476942",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0047",
+      "phone": "13450116580",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0048",
+      "phone": "15768188672",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0049",
+      "phone": "17827793348",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0050",
+      "phone": "18802517124",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0051",
+      "phone": "19865343583",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0052",
+      "phone": "13727717208",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0053",
+      "phone": "18813359432",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0054",
+      "phone": "18899898090",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0055",
+      "phone": "19811967816",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0056",
+      "phone": "18316605330",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0057",
+      "phone": "18813533687",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0058",
+      "phone": "18826730510",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0059",
+      "phone": "15915274962",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0060",
+      "phone": "18819863436",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0061",
+      "phone": "13580087609",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0062",
+      "phone": "14718096026",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0063",
+      "phone": "13727741754",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0064",
+      "phone": "18811822748",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0065",
+      "phone": "18320685631",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0066",
+      "phone": "13534868597",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0067",
+      "phone": "18320645403",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0068",
+      "phone": "17825877258",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0069",
+      "phone": "18319141228",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0070",
+      "phone": "18718359820",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0071",
+      "phone": "18476514264",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0072",
+      "phone": "18814320215",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0073",
+      "phone": "15875881434",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0074",
+      "phone": "15986203726",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0075",
+      "phone": "17825790644",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0076",
+      "phone": "13929722474",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0077",
+      "phone": "18312334853",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0078",
+      "phone": "18813351680",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0079",
+      "phone": "18320688392",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0080",
+      "phone": "13828657456",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0081",
+      "phone": "15119640840",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0082",
+      "phone": "17880702319",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0083",
+      "phone": "14778864940",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0084",
+      "phone": "15113645613",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0085",
+      "phone": "18319143254",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0086",
+      "phone": "13432332529",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0087",
+      "phone": "13542348832",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0088",
+      "phone": "17819369944",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0089",
+      "phone": "15089543448",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0090",
+      "phone": "18319169552",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0091",
+      "phone": "13692650403",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0092",
+      "phone": "18813342716",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0093",
+      "phone": "13790925581",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0094",
+      "phone": "13929772424",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0095",
+      "phone": "13413383595",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0096",
+      "phone": "13686722674",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0097",
+      "phone": "13686729694",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0098",
+      "phone": "15218375706",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0099",
+      "phone": "13535908112",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0100",
+      "phone": "18476523057",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0101",
+      "phone": "13929771468",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0102",
+      "phone": "18320609896",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0103",
+      "phone": "19868312553",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0104",
+      "phone": "15219905070",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0105",
+      "phone": "18475470119",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0106",
+      "phone": "14706911020",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0107",
+      "phone": "15767640593",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0108",
+      "phone": "17819395109",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0109",
+      "phone": "17818016564",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0110",
+      "phone": "13413368160",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0111",
+      "phone": "15917116611",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0112",
+      "phone": "18718259259",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0113",
+      "phone": "17825867973",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0114",
+      "phone": "18719121416",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0115",
+      "phone": "15767118936",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0116",
+      "phone": "13692618090",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0117",
+      "phone": "15219900886",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0118",
+      "phone": "13692500979",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0119",
+      "phone": "18318684025",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0120",
+      "phone": "18806689836",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0121",
+      "phone": "18319760568",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0122",
+      "phone": "14706898285",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0123",
+      "phone": "13450136408",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0124",
+      "phone": "15219919814",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0125",
+      "phone": "15766482019",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0126",
+      "phone": "13692659196",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    },
+    {
+      "orderId": "0127",
+      "phone": "17825791451",
+      "originalDiscountAmount": 30,
+      "updatedDiscountAmount": 0,
+      "difference": 30
+    }
+  ]
+}

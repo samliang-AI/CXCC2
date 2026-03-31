@@ -1,0 +1,354 @@
+/* dashboard.wxss */
+/* 页面样式 */
+.container {
+  padding: 20rpx;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+/* 卡片样式 */
+.card {
+  background-color: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+}
+
+/* 标题样式 */
+.title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  display: flex;
+  align-items: center;
+}
+
+.title::before {
+  content: '';
+  width: 8rpx;
+  height: 32rpx;
+  background: linear-gradient(180deg, #1890ff, #52c41a);
+  border-radius: 4rpx;
+  margin-right: 16rpx;
+}
+
+/* 副标题容器样式 */
+.subtitle-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+/* 副标题样式 */
+.subtitle {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.subtitle::before {
+  content: '';
+  width: 8rpx;
+  height: 28rpx;
+  background: linear-gradient(180deg, #52c41a, #1890ff);
+  border-radius: 4rpx;
+  margin-right: 12rpx;
+}
+
+/* 时间选择器样式 */
+.time-selector {
+  background-color: #f0f2f5;
+  border-radius: 8rpx;
+  padding: 8rpx 16rpx;
+  min-width: 120rpx;
+  text-align: right;
+}
+
+.picker-text {
+  font-size: 24rpx;
+  color: #1890ff;
+  font-weight: 500;
+}
+
+/* 行样式 */
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+/* 列样式 */
+.col {
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.col:last-child {
+  margin-right: 0;
+}
+
+/* 数据卡片样式 - 渐变色背景 */
+.data-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16rpx;
+  padding: 32rpx 16rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 四个卡片的渐变色 */
+.col:nth-child(1) .data-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.col:nth-child(2) .data-card {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.col:nth-child(3) .data-card {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.col:nth-child(4) .data-card {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+/* 数据值样式 */
+.data-value {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 12rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 数据标签样式 */
+.data-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+/* 日期选择器样式 */
+.date-picker {
+  margin: 0 0 24rpx 0;
+  padding: 24rpx 32rpx;
+  background-color: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+}
+
+.date-picker .row {
+  margin-bottom: 0;
+  width: 100%;
+}
+
+.date-picker text {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.date-picker .text {
+  color: #1890ff;
+  font-weight: 600;
+}
+
+/* 图表容器样式 */
+.chart-container {
+  width: 100%;
+  height: 533rpx;
+  margin: 20rpx 0;
+  background-color: #fafafa;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  box-sizing: border-box;
+}
+
+/* 表格容器样式 */
+.table-container {
+  overflow-x: auto;
+  background-color: #fafafa;
+  border-radius: 12rpx;
+  padding: 16rpx;
+}
+
+/* 表格头部样式 */
+.table-header {
+  display: flex;
+  flex-direction: row;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12rpx;
+  padding: 20rpx 16rpx;
+  font-weight: 600;
+  color: #fff;
+  font-size: 24rpx;
+}
+
+/* 表格行样式 */
+.table-row {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1rpx solid #e8e8e8;
+  padding: 20rpx 16rpx;
+  font-size: 24rpx;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.table-row:active {
+  background-color: #f0f0f0;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+/* 表格单元格样式 */
+.table-cell {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 项目行样式 */
+.project-row {
+  font-weight: 600;
+  background-color: #fff;
+  border-radius: 8rpx;
+  margin: 8rpx 0;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+}
+
+/* 项目名称样式 */
+.project-name {
+  font-weight: 700;
+  color: #333;
+}
+
+/* 项目名称列宽度设置 */
+.project-name-cell {
+  flex: 2; /* 宽度是其他列的两倍 */
+  text-align: left;
+  justify-content: flex-start;
+}
+
+/* 团队行样式 */
+.team-row {
+  background-color: #f9f9f9;
+  font-size: 22rpx;
+  border-radius: 8rpx;
+  margin: 4rpx 0;
+}
+
+/* 团队名称样式 */
+.team-name {
+  text-align: left;
+  color: #666;
+  font-weight: 500;
+}
+
+/* 成功量样式 */
+.success-value {
+  color: #52c41a;
+  font-weight: 700;
+}
+
+/* 人均成功量样式 */
+.avg-value {
+  color: #1890ff;
+  font-weight: 700;
+}
+
+/* 合计行样式 */
+.total-row {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+  font-weight: 700;
+  color: #333;
+  border-top: 2rpx solid #d9d9d9;
+  margin-top: 16rpx;
+  border-radius: 8rpx;
+}
+
+/* 合计标签样式 */
+.total-label {
+  text-align: left;
+  font-weight: 700;
+  color: #333;
+}
+
+/* 加载样式 */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+}
+
+.loading text {
+  color: #999;
+  font-size: 28rpx;
+  margin-top: 16rpx;
+}
+
+/* 错误提示样式 */
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 0;
+  color: #ff4d4f;
+}
+
+.error text {
+  font-size: 28rpx;
+  margin-bottom: 24rpx;
+}
+
+/* 按钮样式 */
+.btn {
+  display: block;
+  width: 60%;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  text-align: center;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-top: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.4);
+}
+
+.btn:active {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+/* 文本样式 */
+.text {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+/* 表格分组样式 */
+.table-group {
+  margin-bottom: 8rpx;
+}

@@ -1,0 +1,120 @@
+<!-- dashboard.wxml -->
+<view class="container">
+  <!-- 日期选择 -->
+  <view class="date-picker">
+    <picker mode="date" bindchange="bindDateChange" value="{{date}}" start="2026-01-01" end="{{today}}">
+      <view class="row">
+        <text>选择日期：</text>
+        <text class="text">{{date}}</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 数据概览 -->
+  <view class="card">
+    <view class="title">数据概览</view>
+    <view class="row">
+      <view class="col">
+        <view class="data-card">
+          <view class="data-value">{{overview.totalCalls}}</view>
+          <view class="data-label">总呼叫量</view>
+        </view>
+      </view>
+      <view class="col">
+        <view class="data-card">
+          <view class="data-value">{{overview.connectedCalls}}</view>
+          <view class="data-label">接通量</view>
+        </view>
+      </view>
+      <view class="col">
+        <view class="data-card">
+          <view class="data-value">{{overview.successCalls}}</view>
+          <view class="data-label">成功量</view>
+        </view>
+      </view>
+      <view class="col">
+        <view class="data-card">
+          <view class="data-value">{{overview.totalAgents}}</view>
+          <view class="data-label">坐席人数</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 项目数据明细 -->
+  <view class="card">
+    <view class="subtitle">项目数据明细</view>
+    <view class="table-container">
+      <view class="table-header">
+        <view class="table-cell">序号</view>
+        <view class="table-cell project-name-cell">项目名称</view>
+        <view class="table-cell">接通量</view>
+        <view class="table-cell">成功量</view>
+        <view class="table-cell">成功率</view>
+        <view class="table-cell">坐席人数</view>
+        <view class="table-cell">人均成功量</view>
+      </view>
+      <!-- 项目行 -->
+      <view wx:for="{{projectDetails}}" wx:key="cityCode" class="table-group">
+        <!-- 项目汇总行 -->
+        <view class="table-row project-row">
+          <view class="table-cell">{{index + 1}}</view>
+          <view class="table-cell project-name project-name-cell">{{item.cityName}}</view>
+          <view class="table-cell">{{item.connectedCalls}}</view>
+          <view class="table-cell success-value">{{item.successCalls}}</view>
+          <view class="table-cell">{{item.successRate}}%</view>
+          <view class="table-cell">{{item.agentCount}}</view>
+          <view class="table-cell avg-value">{{item.avgSuccessPerAgent}}</view>
+        </view>
+        
+        <!-- 团队数据行 -->
+        <view wx:for="{{item.teams}}" wx:key="teamId" class="table-row team-row">
+          <view class="table-cell"></view>
+          <view class="table-cell team-name project-name-cell">{{item.teamName}}</view>
+          <view class="table-cell">{{item.connectedCalls}}</view>
+          <view class="table-cell success-value">{{item.successCalls}}</view>
+          <view class="table-cell">{{item.successRate}}%</view>
+          <view class="table-cell">{{item.agentCount}}</view>
+          <view class="table-cell avg-value">{{item.avgSuccessPerAgent}}</view>
+        </view>
+      </view>
+      
+      <!-- 合计行 -->
+      <view class="table-row total-row">
+        <view class="table-cell"></view>
+        <view class="table-cell total-label project-name-cell">合计</view>
+        <view class="table-cell">{{totalStats.connectedCalls}}</view>
+        <view class="table-cell success-value">{{totalStats.successCalls}}</view>
+        <view class="table-cell">{{totalStats.successRate}}%</view>
+        <view class="table-cell">{{totalStats.agentCount}}</view>
+        <view class="table-cell avg-value">{{totalStats.avgSuccessPerAgent}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 趋势分析 -->
+  <view class="card">
+    <view class="subtitle-container">
+      <view class="subtitle">趋势分析</view>
+      <view class="time-selector">
+        <picker bindchange="bindTimeRangeChange" range="{{timeRangeOptions}}" value="{{timeRangeIndex}}">
+          <view class="picker-text">{{timeRangeOptions[timeRangeIndex]}}</view>
+        </picker>
+      </view>
+    </view>
+    <view class="chart-container">
+      <canvas canvas-id="trendChart" style="width: 100%; height: 533rpx;"></canvas>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 错误提示 -->
+  <view wx:if="{{error}}" class="error">
+    <text>{{error}}</text>
+    <view class="btn" bindtap="loadData">重新加载</view>
+  </view>
+</view>

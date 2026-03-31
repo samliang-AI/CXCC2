@@ -1,0 +1,39 @@
+{
+  "pages": [
+    "pages/dashboard/dashboard",
+    "pages/team/team"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "数据看板",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#1890ff",
+    "borderStyle": "black",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/dashboard/dashboard",
+        "text": "数据看板"
+      },
+      {
+        "pagePath": "pages/team/team",
+        "text": "团队看板"
+      }
+    ]
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 10000
+  },
+  "debug": true,
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于获取用户位置信息"
+    }
+  },
+  "sitemapLocation": "sitemap.json"
+}
