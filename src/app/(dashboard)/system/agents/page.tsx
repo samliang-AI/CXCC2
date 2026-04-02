@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useEffect, useMemo, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -39,7 +39,7 @@ export default function AgentsPage() {
         pageSize: String(pageSize),
       })
       if (filters.keyword.trim()) params.set('keyword', filters.keyword.trim())
-      const res = await fetch(`/api/local/agents?${params.toString()}`)
+      const res = await fetch(`/api/local?action=agents?${params.toString()}`)
       const json: Resp = await res.json()
       if (!res.ok || json.code !== 200 || !json.data) throw new Error(json.message || '加载失败')
       setRows(json.data.list || [])

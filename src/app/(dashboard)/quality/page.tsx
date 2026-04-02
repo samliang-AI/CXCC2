@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useRef, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -410,7 +410,7 @@ export default function QualityPage() {
         params.set('qualityStatus', filters.qualityStatus)
       }
       
-      const response = await fetch(`/api/local/recordings?${params.toString()}`)
+      const response = await fetch(`/api/local?action=recordings?${params.toString()}`)
       
       if (!response.ok) {
         throw new Error(`加载失败: ${response.status}`)

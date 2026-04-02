@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -125,7 +125,7 @@ export default function RevenueDashboardPage() {
           .catch(error => console.error('预加载订单数据失败:', error))
         
         // 预加载通话清单数据
-        fetch(`/api/local/call-logs?startDate=${start}&endDate=${end}`)
+        fetch(`/api/local?action=call-logs?startDate=${start}&endDate=${end}`)
           .then(response => response.json())
           .then(data => {
             if (data.code === 0) {
@@ -144,7 +144,7 @@ export default function RevenueDashboardPage() {
           .catch(error => console.error('预加载通话清单数据失败:', error))
         
         // 预加载录音清单数据
-        fetch(`/api/local/recordings?startDate=${start}&endDate=${end}&pageSize=10000`)
+        fetch(`/api/local?action=recordings?startDate=${start}&endDate=${end}&pageSize=10000`)
           .then(response => response.json())
           .then(data => {
             if (data.code === 0) {
@@ -226,7 +226,7 @@ export default function RevenueDashboardPage() {
     try {
       setLoading(true)
       // 使用本地通话清单API获取数据
-      const response = await fetch(`/api/local/call-logs?startDate=${startDate}&endDate=${endDate}`)
+      const response = await fetch(`/api/local?action=call-logs?startDate=${startDate}&endDate=${endDate}`)
       const data = await response.json()
       
       if (data.code === 0) {
@@ -272,7 +272,7 @@ export default function RevenueDashboardPage() {
     try {
       setLoading(true)
       // 使用本地录音清单API获取数据，设置pageSize为一个大值以获取所有数据
-      const response = await fetch(`/api/local/recordings?startDate=${startDate}&endDate=${endDate}&pageSize=10000`)
+      const response = await fetch(`/api/local?action=recordings?startDate=${startDate}&endDate=${endDate}&pageSize=10000`)
       const data = await response.json()
       
       if (data.code === 0) {

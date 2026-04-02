@@ -106,7 +106,7 @@ export default function TeamsPage() {
         pageSize: String(pageSize),
       })
       if (filters.keyword.trim()) params.set('keyword', filters.keyword.trim())
-      const res = await fetch(`/api/local/teams?${params.toString()}`)
+      const res = await fetch(`/api/local?action=teams?${params.toString()}`)
       const json: Resp = await res.json()
       if (!res.ok || json.code !== 200 || !json.data) throw new Error(json.message || '加载失败')
       setRows(json.data.list || [])
@@ -189,7 +189,7 @@ export default function TeamsPage() {
       // 生成团队键（拼音或简写）
       const teamKey = newTeam.teamName.trim()
       
-      const res = await fetch('/api/local/teams', {
+      const res = await fetch('/api/local?action=teams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

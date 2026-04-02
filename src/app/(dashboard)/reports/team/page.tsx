@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -193,7 +193,7 @@ export default function TeamDashboardPage() {
         params.append('teamId', selectedTeam)
       }
       const response = await fetch(
-        `/api/reports/team/statistics?${params.toString()}`
+        `/api/reports?type=team?${params.toString()}`
       )
       const result = await response.json()
       if (result.code === 200) {
@@ -227,7 +227,7 @@ export default function TeamDashboardPage() {
       params.append('endDate', monthEnd)
       
       const response = await fetch(
-        `/api/reports/team/statistics?${params.toString()}`
+        `/api/reports?type=team?${params.toString()}`
       )
       const result = await response.json()
       if (result.code === 200) {
@@ -265,7 +265,7 @@ export default function TeamDashboardPage() {
       const year = Number(yearText)
       const month = Number(monthText)
       const response = await fetch(
-        `/api/reports/team/agent-daily?agentCode=${agent.agentCode}&year=${year}&month=${month}`
+        `/api/reports?type=team-agent-daily?agentCode=${agent.agentCode}&year=${year}&month=${month}`
       )
       const result = await response.json()
       if (result.code === 200) {

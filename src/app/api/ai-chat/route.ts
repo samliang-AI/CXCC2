@@ -114,9 +114,9 @@ async function callTool(toolName: string, params: Record<string, any>): Promise<
   
   const toolUrls: Record<string, string> = {
     get_dashboard: `/api/dashboard/statistics`,
-    get_team_statistics: `/api/team/statistics`,
-    get_type_filter: `/api/reports/type-filter`,
-    get_outbound_result: `/api/reports/outbound-result`
+    get_team_statistics: `/api/reports?type=team`,
+    get_type_filter: `/api/reports?type=type-filter`,
+    get_outbound_result: `/api/reports?type=outbound-result`
   }
   
   const url = toolUrls[toolName]

@@ -245,7 +245,7 @@ export default function CallLogsPage() {
     setApiLoading(true)
     setApiError('')
     try {
-      const response = await fetch('/api/cxcc/call-logs', {
+      const response = await fetch('/api/cxcc?action=call-logs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -364,7 +364,7 @@ export default function CallLogsPage() {
     setUpdateLoading(true)
     setUpdateMessage('')
     try {
-      const response = await fetch('/api/cxcc/call-logs/update-local', {
+      const response = await fetch('/api/cxcc?action=call-logs-update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

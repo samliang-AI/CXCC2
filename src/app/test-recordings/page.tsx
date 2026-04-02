@@ -134,7 +134,7 @@ export default function RecordingsPage() {
         params.set('qualityStatus', activeFilters.qualityStatus)
       }
 
-      const response = await fetch(`/api/local/recordings?${params.toString()}`)
+      const response = await fetch(`/api/local?action=recordings?${params.toString()}`)
 
       if (!response.ok) {
         let detail = '加载失败'
@@ -289,7 +289,7 @@ export default function RecordingsPage() {
         return datetimeLocal.replace('T', ' ');
       };
       
-      const response = await fetch('/api/cxcc/recordings', {
+      const response = await fetch('/api/cxcc?action=recordings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -335,7 +335,7 @@ export default function RecordingsPage() {
         return datetimeLocal.replace('T', ' ');
       };
       
-      const response = await fetch('/api/cxcc/recordings/update-local', {
+      const response = await fetch('/api/cxcc?action=recordings-update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

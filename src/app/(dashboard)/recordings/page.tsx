@@ -142,7 +142,7 @@ export default function RecordingsPage() {
       }
 
       console.log('请求录音数据，参数:', params.toString())
-      const response = await fetch(`/api/local/recordings?${params.toString()}`)
+      const response = await fetch(`/api/local?action=recordings?${params.toString()}`)
 
       if (!response.ok) {
         let detail = '加载失败'
@@ -432,7 +432,7 @@ export default function RecordingsPage() {
       console.log('API 查询参数:', params.toString());
       
       // 使用超时控制发起请求
-      const response = await fetch(`/api/cxcc/recordings?${params.toString()}`, {
+      const response = await fetch(`/api/cxcc?action=recordings?${params.toString()}`, {
         signal: controller.signal
       })
       
@@ -528,7 +528,7 @@ export default function RecordingsPage() {
         return time;
       };
       
-      const response = await fetch('/api/cxcc/recordings/update-local', {
+      const response = await fetch('/api/cxcc?action=recordings-update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

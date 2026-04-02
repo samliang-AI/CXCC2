@@ -281,14 +281,14 @@ export const customReportAPI = {
     return response.json()
   },
 
-  // 导出报表
-  async exportReport(reportId: string, format: 'pdf' | 'excel' | 'csv' = 'excel') {
-    const response = await fetch(`${API_BASE_URL}/api/reports/${reportId}/export?format=${format}`)
-    
-    if (!response.ok) throw new Error('导出失败')
-    
-    return response.blob()
-  }
+  // 导出报表 - 暂时禁用，需要重新实现
+  // async exportReport(reportId: string, format: 'pdf' | 'excel' | 'csv' = 'excel') {
+  //   const response = await fetch(`${API_BASE_URL}/api/reports?type=${reportId}&format=${format}`)
+  //   
+  //   if (!response.ok) throw new Error('导出失败')
+  //   
+  //   return response.blob()
+  // }
 }
 
 // WebSocket 实时数据服务

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -222,7 +222,7 @@ export default function OrdersPage() {
   const fetchSuccessCustomers = useCallback(async () => {
     try {
       const today = new Date().toISOString().split('T')[0]
-      const response = await fetch(`/api/recordings/success-customers?startDate=${today}&endDate=${today}`, {
+      const response = await fetch(`/api/recordings?action=success-customers?startDate=${today}&endDate=${today}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'

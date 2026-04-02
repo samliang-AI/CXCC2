@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -115,7 +115,7 @@ export default function OutboundResultPage() {
       }
       
       const response = await fetch(
-        `/api/reports/outbound-result/statistics?${params.toString()}`
+        `/api/reports?type=outbound-result?${params.toString()}`
       )
       const result = await response.json()
       if (result.code === 200) {

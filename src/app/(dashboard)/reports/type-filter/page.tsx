@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -128,7 +128,7 @@ export default function TypeFilterPage() {
       }
       
       const response = await fetch(
-        `/api/reports/type-filter/statistics?${params.toString()}`
+        `/api/reports?type=type-filter?${params.toString()}`
       )
       const result = await response.json()
       if (result.code === 200) {
