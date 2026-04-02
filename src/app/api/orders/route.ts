@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { readFile, writeFile, access, mkdir } from 'fs/promises'
 import path from 'path'
 
+export const dynamic = 'force-dynamic'
+
 const DATA_DIR = path.join(process.cwd(), 'data')
 const ORDERS_FILE = path.join(DATA_DIR, 'orders.json')
 

@@ -3,6 +3,8 @@ import path from 'path'
 import { readFile, writeFile, mkdir } from 'fs/promises'
 import { existsSync } from 'fs'
 
+export const dynamic = 'force-dynamic'
+
 const DATA_DIR = path.join(process.cwd(), 'data', 'team-targets')
 
 // 确保数据目录存在

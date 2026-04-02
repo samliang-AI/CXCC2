@@ -17,6 +17,8 @@ import { getProjectIdNameMap, resolveProjectName } from '@/lib/project-id-name-m
 import { getCachedQueryResult, getRouteCacheTtlMs } from '@/lib/route-query-cache'
 import { getCallLogDailySummary, getRecordingDailySummary, getCallLogDailySummaryByDateRange, getRecordingDailySummaryByDateRange } from '@/lib/daily-aggregate-store'
 
+export const dynamic = 'force-dynamic'
+
 function formatDateStr(d: Date) {
   const yyyy = d.getFullYear()
   const mm = String(d.getMonth() + 1).padStart(2, '0')

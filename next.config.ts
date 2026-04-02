@@ -6,9 +6,6 @@ const nextConfig: NextConfig = {
   /* config options here */
   allowedDevOrigins: ['*.dev.coze.site'],
   
-  // 启用 Cache Components（已包含 Partial Prerendering 功能）
-  cacheComponents: true,
-  
   async rewrites() {
     // 仅代理 Python 后端 API，保留 Next.js 自有路由 (auth/cxcc/ai-chat 等)
     return [

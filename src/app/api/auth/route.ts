@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { clearAuth } from '@/lib/auth/config'
 
+export const dynamic = 'force-dynamic'
+
 async function handleLogin(request: NextRequest) {
   try {
     const body = await request.json()
