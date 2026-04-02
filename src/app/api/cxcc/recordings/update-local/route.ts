@@ -45,10 +45,15 @@ export async function POST(request: NextRequest) {
     // 2. 转换为录音清单格式
     const recordings = records.map((record, index) => mapCxccRecordToRecording(record, index))
 
-    // 3. 更新本地文件
+    // 3. 更新本地文件（只添加新录音，不覆盖已有数据）
+    console.log(`[录音清单更新] 开始更新本地文件，获取到 ${recordings.length} 条记录`);
+    
     const upsertedCount = await upsertLocalRecordings(recordings, {
-      batchSize: 10000
+      batchSize: 10000,
+      onlyAddNew: true  // 只添加新录音，不覆盖已有数据
     })
+    
+    console.log(`[录音清单更新] 完成更新，新增 ${upsertedCount} 条记录`);
 
     return NextResponse.json({
       code: 0,
@@ -56,7 +61,7 @@ export async function POST(request: NextRequest) {
       data: {
         total: total,
         upserted: upsertedCount,
-        message: `成功更新本地文件，共处理 ${recordings.length} 条记录，写入 ${upsertedCount} 条记录`
+        message: `成功更新本地文件，新增 ${upsertedCount} 条记录（只添加新录音，不覆盖已有数据）`
       },
     })
   } catch (error) {

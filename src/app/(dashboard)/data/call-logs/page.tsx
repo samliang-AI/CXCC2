@@ -91,7 +91,7 @@ export default function CallLogsPage() {
       }
       
       // 递归处理对象，移除或转换DOM元素和循环引用
-      function processObject(obj, visited = new WeakSet()) {
+      function processObject(obj: any, visited: WeakSet<any> = new WeakSet()): any {
         // 检查是否为DOM元素
         if (obj instanceof Element || obj instanceof HTMLElement) {
           return '[DOM Element]'
@@ -112,11 +112,11 @@ export default function CallLogsPage() {
         
         // 处理数组
         if (Array.isArray(obj)) {
-          return obj.map(item => processObject(item, visited))
+          return obj.map((item: any) => processObject(item, visited))
         }
         
         // 处理对象
-        const processedObj = {}
+        const processedObj: { [key: string]: any } = {}
         for (const key in obj) {
           if (obj.hasOwnProperty(key)) {
             processedObj[key] = processObject(obj[key], visited)
@@ -166,7 +166,7 @@ export default function CallLogsPage() {
 
   const totalPages = Math.max(1, Math.ceil(total / pageSize))
   // 递归处理对象，移除或转换DOM元素和循环引用
-  function processObjectForDisplay(obj, visited = new WeakSet()) {
+  function processObjectForDisplay(obj: any, visited: WeakSet<any> = new WeakSet()): any {
     // 检查是否为DOM元素
     if (obj instanceof Element || obj instanceof HTMLElement) {
       return '[DOM Element]'
@@ -187,11 +187,11 @@ export default function CallLogsPage() {
     
     // 处理数组
     if (Array.isArray(obj)) {
-      return obj.map(item => processObjectForDisplay(item, visited))
+      return obj.map((item: any) => processObjectForDisplay(item, visited))
     }
     
     // 处理对象
-    const processedObj = {}
+    const processedObj: { [key: string]: any } = {}
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
         processedObj[key] = processObjectForDisplay(obj[key], visited)
@@ -298,7 +298,7 @@ export default function CallLogsPage() {
       }
       
       // 递归处理对象，移除或转换DOM元素和循环引用
-      function processObject(obj, visited = new WeakSet()) {
+      function processObject(obj: any, visited: WeakSet<any> = new WeakSet()): any {
         // 检查是否为DOM元素
         if (obj instanceof Element || obj instanceof HTMLElement) {
           console.log('发现DOM元素，替换为占位符')
@@ -321,11 +321,11 @@ export default function CallLogsPage() {
         
         // 处理数组
         if (Array.isArray(obj)) {
-          return obj.map(item => processObject(item, visited))
+          return obj.map((item: any) => processObject(item, visited))
         }
         
         // 处理对象
-        const processedObj = {}
+        const processedObj: { [key: string]: any } = {}
         for (const key in obj) {
           if (obj.hasOwnProperty(key)) {
             processedObj[key] = processObject(obj[key], visited)
@@ -336,7 +336,7 @@ export default function CallLogsPage() {
       }
       
       // 处理记录，移除或转换DOM元素和循环引用
-      const processedRecords = records.map((record, index) => {
+      const processedRecords = records.map((record: any, index: number) => {
         console.log(`处理第 ${index} 条记录`)
         return processObject(record)
       })

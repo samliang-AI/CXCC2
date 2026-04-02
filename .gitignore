@@ -100,3 +100,10 @@ Desktop.ini
 .turbo
 
 .coze-logs
+
+# Runtime data files
+data/local-sync/
+data/cxcc-token-cache.json
+data/project-revenues/
+data/team-targets/
+data/orders.json

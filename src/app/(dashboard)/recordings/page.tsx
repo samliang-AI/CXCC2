@@ -172,7 +172,7 @@ export default function RecordingsPage() {
       const total = data.total ?? data.count ?? data.data?.total ?? rawRecordList.length
 
       // 递归处理对象，移除或转换DOM元素和循环引用
-      function processObject(obj, visited = new WeakSet()) {
+      function processObject(obj: any, visited: WeakSet<any> = new WeakSet()): any {
         // 检查是否为DOM元素
         if (obj instanceof Element || obj instanceof HTMLElement) {
           return '[DOM Element]'
@@ -193,11 +193,11 @@ export default function RecordingsPage() {
         
         // 处理数组
         if (Array.isArray(obj)) {
-          return obj.map(item => processObject(item, visited))
+          return obj.map((item: any) => processObject(item, visited))
         }
         
         // 处理对象
-        const processedObj = {}
+        const processedObj: { [key: string]: any } = {}
         for (const key in obj) {
           if (obj.hasOwnProperty(key)) {
             processedObj[key] = processObject(obj[key], visited)
@@ -208,7 +208,7 @@ export default function RecordingsPage() {
       }
       
       // 处理记录，移除或转换DOM元素和循环引用
-      const processedRecordList = rawRecordList.map(record => processObject(record))
+      const processedRecordList = rawRecordList.map((record: any) => processObject(record))
 
       setRecordings(processedRecordList)
       setServerStatusOptions(Array.isArray(data.statusOptions) ? data.statusOptions : [])
@@ -285,7 +285,7 @@ export default function RecordingsPage() {
   const totalPages = Math.max(1, Math.ceil((pagination.total || 0) / pagination.pageSize))
 
   // 递归处理对象，移除或转换DOM元素和循环引用
-  function processObjectForDisplay(obj, visited = new WeakSet()) {
+  function processObjectForDisplay(obj: any, visited: WeakSet<any> = new WeakSet()): any {
     // 检查是否为DOM元素
     if (obj instanceof Element || obj instanceof HTMLElement) {
       return '[DOM Element]'
@@ -306,11 +306,11 @@ export default function RecordingsPage() {
     
     // 处理数组
     if (Array.isArray(obj)) {
-      return obj.map(item => processObjectForDisplay(item, visited))
+      return obj.map((item: any) => processObjectForDisplay(item, visited))
     }
     
     // 处理对象
-    const processedObj = {}
+    const processedObj: { [key: string]: any } = {}
     for (const key in obj) {
       if (obj.hasOwnProperty(key)) {
         processedObj[key] = processObjectForDisplay(obj[key], visited)
@@ -394,91 +394,88 @@ export default function RecordingsPage() {
   }
   
   const fetchApiData = async (pageNum?: number | React.MouseEvent<HTMLButtonElement>) => {
-    // 处理事件对象，确保pageNum是数字
+    // 处理事件对象，确保 pageNum 是数字
     const currentPage = typeof pageNum === 'number' ? pageNum : apiPagination.pageNum
+    
+    // 第一步：清空当前录音列表数据，显示加载状态
     setApiLoading(true)
     setApiError('')
+    setApiRecordings([]) // 清空旧数据
+    setApiTotal(0)
+    setShowApiResults(true) // 显示 API 查询结果区域，但显示加载状态
+    
+    // 创建超时控制器
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => {
+      controller.abort()
+      console.log('API 查询超时（300 秒）')
+    }, 300000) // 300 秒超时（5 分钟）
+    
     try {
       // 转换时间格式：从 datetime-local 格式转换为 CXCC API 期望的格式
       const formatTime = (datetimeLocal: string) => {
-        // 确保时间格式包含秒，例如：2026-03-23 00:00:00
         const time = datetimeLocal.replace('T', ' ');
-        if (time.length === 16) { // 格式为 YYYY-MM-DD HH:MM
+        if (time.length === 16) {
           return time + ':00';
         }
         return time;
       };
       
-      console.log('API查询参数:', {
-        pageNum: currentPage,
-        pageSize: apiPagination.pageSize,
-        agentNo: '',
-        projectId: '',
+      // 构建查询参数
+      const params = new URLSearchParams({
+        page: String(currentPage),
+        pageSize: String(apiPagination.pageSize),
         startTime: formatTime(filters.startTime),
-        endTime: formatTime(filters.endTime),
+        endTime: formatTime(filters.endTime)
       });
       
-      const response = await fetch('/api/cxcc/recordings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          pageNum: currentPage,
-          pageSize: apiPagination.pageSize,
-          agentNo: '', // 空值表示不限坐席
-          projectId: '', // 空值表示不限项目
-          startTime: formatTime(filters.startTime),
-          endTime: formatTime(filters.endTime),
-        }),
+      console.log('API 查询参数:', params.toString());
+      
+      // 使用超时控制发起请求
+      const response = await fetch(`/api/cxcc/recordings?${params.toString()}`, {
+        signal: controller.signal
       })
       
-      console.log('API响应状态:', response.status);
+      clearTimeout(timeoutId)
+      
+      console.log('API 响应状态:', response.status);
       
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('API响应错误:', errorText);
-        throw new Error(`API请求失败: ${response.status} ${response.statusText}`)
+        console.error('API 响应错误:', errorText);
+        throw new Error(`API 请求失败：${response.status} ${response.statusText}`)
       }
       
       const data = await response.json()
-      console.log('API响应数据:', data);
+      console.log('API 响应数据:', data);
       
       if (data.code !== 0) {
-        throw new Error(data.message || 'API返回错误')
+        throw new Error(data.message || 'API 返回错误')
       }
       
-      // 尝试多种可能的数据结构
       const records = data.data?.records || data.rows || []
       const total = data.total || data.data?.total || 0
       
-      // 递归处理对象，移除或转换DOM元素和循环引用
-      function processObject(obj, visited = new WeakSet()) {
-        // 检查是否为DOM元素
+      function processObject(obj: any, visited: WeakSet<any> = new WeakSet()): any {
         if (obj instanceof Element || obj instanceof HTMLElement) {
           return '[DOM Element]'
         }
         
-        // 检查是否为基本类型
         if (typeof obj !== 'object' || obj === null) {
           return obj
         }
         
-        // 检查是否已经访问过（循环引用）
         if (visited.has(obj)) {
           return '[Object with circular reference]'
         }
         
-        // 标记为已访问
         visited.add(obj)
         
-        // 处理数组
         if (Array.isArray(obj)) {
-          return obj.map(item => processObject(item, visited))
+          return obj.map((item: any) => processObject(item, visited))
         }
         
-        // 处理对象
-        const processedObj = {}
+        const processedObj: { [key: string]: any } = {}
         for (const key in obj) {
           if (obj.hasOwnProperty(key)) {
             processedObj[key] = processObject(obj[key], visited)
@@ -488,9 +485,9 @@ export default function RecordingsPage() {
         return processedObj
       }
       
-      // 处理记录，移除或转换DOM元素和循环引用
-      const processedRecords = records.map(record => processObject(record))
+      const processedRecords = records.map((record: any) => processObject(record))
       
+      // 第二步：显示 API 查询结果
       setApiRecordings(processedRecords)
       setApiTotal(total)
       setApiPagination(prev => ({
@@ -498,12 +495,20 @@ export default function RecordingsPage() {
         pageNum: currentPage,
         total
       }))
-      setShowApiResults(true)
-    } catch (e) {
-      console.error('API查询错误:', e);
-      setApiError(e instanceof Error ? e.message : 'API查询失败')
-      setShowApiResults(true) // 即使出错也要显示错误信息
+    } catch (e: any) {
+      console.error('API 查询错误:', e);
+      
+      // 处理超时错误
+      if (e.name === 'AbortError') {
+        console.log('查询超时，显示友好提示')
+        setApiError('查询超时，CXCC API 响应时间过长（超过 5 分钟）。建议：\n1. 缩小查询时间范围（如按周或按月查询）\n2. 检查网络连接\n3. 避开系统使用高峰时段\n4. 稍后重试')
+      } else if (e instanceof Error) {
+        setApiError(e.message)
+      } else {
+        setApiError('API 查询失败')
+      }
     } finally {
+      clearTimeout(timeoutId)
       setApiLoading(false)
     }
   }
@@ -663,14 +668,34 @@ export default function RecordingsPage() {
             </Button>
             <Button variant="outline" onClick={handleReset}>重置</Button>
             <Button variant="secondary" onClick={() => {
-              console.log('点击了API查询按钮');
-              console.log('当前filters:', filters);
+              console.log('点击了 API 查询按钮');
+              console.log('当前 filters:', filters);
               fetchApiData();
             }} disabled={apiLoading}>
-              {apiLoading ? '查询中...' : 'API查询'}
+              {apiLoading ? (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  查询中，请稍候...
+                </>
+              ) : (
+                <>
+                  <Search className="h-4 w-4 mr-2" />
+                  API 实时查询
+                </>
+              )}
             </Button>
             <Button variant="default" onClick={updateLocalFile} disabled={updateLoading}>
-              {updateLoading ? '更新中...' : '更新本地文件'}
+              {updateLoading ? (
+                <>
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                  更新中...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4 mr-2" />
+                  更新本地文件（合并）
+                </>
+              )}
             </Button>
           </div>
           {updateMessage && (
@@ -678,6 +703,9 @@ export default function RecordingsPage() {
               {updateMessage}
             </div>
           )}
+          <div className="text-xs text-gray-500 mt-2">
+            💡 提示：更新本地文件只会添加新的录音数据，不会覆盖或删除已有数据。建议定期执行更新操作以保持数据同步。
+          </div>
           <div className="mt-3 flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={() => handleQuickRange('today')}>
               今天
@@ -715,83 +743,114 @@ export default function RecordingsPage() {
       {showApiResults ? (
         <Card>
           <CardHeader>
-            <CardTitle>API查询结果</CardTitle>
+            <CardTitle>API 查询结果</CardTitle>
             <CardDescription>
-              {apiLoading ? '查询中...' : `API实时查询 ${apiTotal} 条`}
+              {apiLoading ? (
+                <div className="flex items-center gap-2">
+                  <RefreshCw className="h-4 w-4 animate-spin" />
+                  <span>正在查询 CXCC API，请稍候...</span>
+                </div>
+              ) : (
+                `API 实时查询 ${apiTotal} 条`
+              )}
             </CardDescription>
             <div className="text-xs text-gray-500">
-              数据来源：CXCC API实时查询
+              数据来源：CXCC API 实时查询
             </div>
           </CardHeader>
           <CardContent>
-            {apiError ? <p className="text-sm text-red-600 mb-3">{apiError}</p> : null}
-            <div className="rounded-md border overflow-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    {apiRecordings.length > 0 ? Object.keys(apiRecordings[0]).map((k) => (
-                      <TableHead key={k}>{k}</TableHead>
-                    )) : (
-                      <TableHead>无数据</TableHead>
-                    )}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {apiRecordings.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={1} className="text-center py-10 text-gray-500">
-                        暂无数据
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    apiRecordings.map((row, idx) => (
-                      <TableRow key={String(row.uuid || row.id || idx)}>
-                        {Object.keys(row).map((k) => (
-                          <TableCell key={`${String(row.uuid || idx)}-${k}`}>{formatCellValue(k, row[k])}</TableCell>
-                        ))}
+            {apiError ? (
+              <div className="mb-3 p-4 bg-red-50 border border-red-200 rounded-md">
+                <div className="flex items-start gap-3">
+                  <div className="text-red-600 mt-0.5">⚠️</div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-red-800 mb-2">API 查询失败</p>
+                    <div className="text-sm text-red-700 whitespace-pre-line">
+                      {apiError}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+            {apiLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
+                  <p className="text-gray-600">正在从 CXCC API 获取数据...</p>
+                  <p className="text-xs text-gray-400 mt-2">如果等待时间过长，请尝试缩小查询时间范围</p>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="rounded-md border overflow-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        {apiRecordings.length > 0 ? Object.keys(apiRecordings[0]).map((k) => (
+                          <TableHead key={k}>{k}</TableHead>
+                        )) : (
+                          <TableHead>无数据</TableHead>
+                        )}
                       </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-            
-            <div className="flex items-center justify-between mt-4">
-              <div className="text-sm text-gray-500">
-                第 {apiPagination.pageNum} / {apiTotalPages} 页
-              </div>
-              <div className="flex items-center gap-2">
-                <select
-                  className="px-2 py-1 border rounded"
-                  value={apiPagination.pageSize}
-                  onChange={(e) => {
-                    const newPageSize = Number(e.target.value)
-                    setApiPagination(prev => ({ ...prev, pageSize: newPageSize, pageNum: 1 }))
-                    fetchApiData(1)
-                  }}
-                >
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                </select>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={apiPagination.pageNum <= 1 || apiLoading}
-                  onClick={() => fetchApiData(apiPagination.pageNum - 1)}
-                >
-                  上一页
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={apiPagination.pageNum >= apiTotalPages || apiLoading}
-                  onClick={() => fetchApiData(apiPagination.pageNum + 1)}
-                >
-                  下一页
-                </Button>
-              </div>
-            </div>
+                    </TableHeader>
+                    <TableBody>
+                      {apiRecordings.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={1} className="text-center py-10 text-gray-500">
+                            暂无数据
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        apiRecordings.map((row, idx) => (
+                          <TableRow key={String(row.uuid || row.id || idx)}>
+                            {Object.keys(row).map((k) => (
+                              <TableCell key={`${String(row.uuid || idx)}-${k}`}>{formatCellValue(k, row[k])}</TableCell>
+                            ))}
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+                
+                <div className="flex items-center justify-between mt-4">
+                  <div className="text-sm text-gray-500">
+                    第 {apiPagination.pageNum} / {apiTotalPages} 页
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <select
+                      className="px-2 py-1 border rounded"
+                      value={apiPagination.pageSize}
+                      onChange={(e) => {
+                        const newPageSize = Number(e.target.value)
+                        setApiPagination(prev => ({ ...prev, pageSize: newPageSize, pageNum: 1 }))
+                        fetchApiData(1)
+                      }}
+                    >
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={50}>50</option>
+                    </select>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={apiPagination.pageNum <= 1 || apiLoading}
+                      onClick={() => fetchApiData(apiPagination.pageNum - 1)}
+                    >
+                      上一页
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={apiPagination.pageNum >= apiTotalPages || apiLoading}
+                      onClick={() => fetchApiData(apiPagination.pageNum + 1)}
+                    >
+                      下一页
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
       ) : (

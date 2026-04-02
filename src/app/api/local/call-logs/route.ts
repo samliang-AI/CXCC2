@@ -88,7 +88,7 @@ async function readLocalCallLogs(startDate: string, endDate: string) {
 }
 
 // GET - 获取本地通话清单数据
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const date = searchParams.get('date')

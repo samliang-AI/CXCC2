@@ -79,22 +79,22 @@ export async function GET(request: NextRequest) {
     
     // 日期筛选
     if (date) {
-      filteredOrders = filteredOrders.filter(order => {
+      filteredOrders = filteredOrders.filter((order: any) => {
         const orderDate = order.date ? order.date.split(' ')[0] : ''
         return orderDate === date
       })
     } else if (startDate && endDate) {
-      filteredOrders = filteredOrders.filter(order => {
+      filteredOrders = filteredOrders.filter((order: any) => {
         const orderDate = order.date ? order.date.split(' ')[0] : ''
         return orderDate >= startDate && orderDate <= endDate
       })
     } else if (startDate) {
-      filteredOrders = filteredOrders.filter(order => {
+      filteredOrders = filteredOrders.filter((order: any) => {
         const orderDate = order.date ? order.date.split(' ')[0] : ''
         return orderDate >= startDate
       })
     } else if (endDate) {
-      filteredOrders = filteredOrders.filter(order => {
+      filteredOrders = filteredOrders.filter((order: any) => {
         const orderDate = order.date ? order.date.split(' ')[0] : ''
         return orderDate <= endDate
       })
@@ -102,28 +102,28 @@ export async function GET(request: NextRequest) {
     
     // 手机号筛选
     if (phone) {
-      filteredOrders = filteredOrders.filter(order => 
+      filteredOrders = filteredOrders.filter((order: any) => 
         order.phone.includes(phone)
       )
     }
     
     // 业务类型筛选
     if (businessType && businessType !== 'all') {
-      filteredOrders = filteredOrders.filter(order => 
+      filteredOrders = filteredOrders.filter((order: any) => 
         order.businessType === businessType
       )
     }
     
     // 项目名称筛选
     if (city && city !== 'all') {
-      filteredOrders = filteredOrders.filter(order => 
+      filteredOrders = filteredOrders.filter((order: any) => 
         order.city === city
       )
     }
     
     // 外呼团队筛选
     if (team && team !== 'all') {
-      filteredOrders = filteredOrders.filter(order => 
+      filteredOrders = filteredOrders.filter((order: any) => 
         order.team === team
       )
     }
@@ -161,7 +161,7 @@ export async function PUT(request: NextRequest) {
     if (Array.isArray(body)) {
       // 批量更新
       for (const updatedOrder of body) {
-        const index = orders.findIndex(order => order.id === updatedOrder.id)
+        const index = orders.findIndex((order: any) => order.id === updatedOrder.id)
         if (index !== -1) {
           orders[index] = updatedOrder
         }
@@ -176,7 +176,7 @@ export async function PUT(request: NextRequest) {
     } else {
       // 单个订单更新
       const updatedOrder = body
-      const index = orders.findIndex(order => order.id === updatedOrder.id)
+      const index = orders.findIndex((order: any) => order.id === updatedOrder.id)
       if (index === -1) {
         return NextResponse.json(
           { error: 'Order not found' },
@@ -216,7 +216,7 @@ export async function DELETE(request: NextRequest) {
     }
     
     const orders = await readOrders()
-    const filteredOrders = orders.filter(order => order.id !== id)
+    const filteredOrders = orders.filter((order: any) => order.id !== id)
     
     if (filteredOrders.length === orders.length) {
       return NextResponse.json(
@@ -249,13 +249,13 @@ export async function POST(request: NextRequest) {
     if (Array.isArray(body)) {
       // 批量添加订单
       const orders = await readOrders()
-      const newOrders = []
+      const newOrders: any[] = []
       
       for (const orderData of body) {
         // 检查是否已存在
-        const isDuplicate = orders.some(order => order.phone === orderData.phone)
+        const isDuplicate = orders.some((order: any) => order.phone === orderData.phone)
         if (!isDuplicate) {
-          const newId = String(orders.length + newOrders.length + 1).padStart(4, '0')
+          const newId: string = String(orders.length + newOrders.length + 1).padStart(4, '0')
           const orderWithId = {
             ...orderData,
             id: newId

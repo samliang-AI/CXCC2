@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { generateText } from 'ai'
 import { openrouter } from '@openrouter/ai-sdk-provider'
 
 const SYSTEM_PROMPT = `你是一个专业的数据查询助手，帮助用户查询外呼质检管理平台的数据。
@@ -189,15 +190,14 @@ export async function POST(request: NextRequest) {
     
     messages.push({ role: 'user', content: userMessage })
     
-    const response = await openrouter.chat.completions.create({
-      model: 'openai/gpt-4o',
+    const { text } = await generateText({
+      model: openrouter('openai/gpt-4o'),
       messages,
       temperature: 0.3,
-      apiKey: openrouterApiKey
     })
     
-    const text = response.choices?.[0]?.message?.content || getFallbackResponse(userMessage)
-    return NextResponse.json({ text })
+    const responseText = text || getFallbackResponse(userMessage)
+    return NextResponse.json({ text: responseText })
     
   } catch (error) {
     console.error('OpenRouter API error:', error)

@@ -32,20 +32,29 @@ import {
   CheckCircle,
   Eye,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  BarChart3,
+  SortAsc,
+  SortDesc
 } from 'lucide-react'
 import { useAutoRefresh } from '@/hooks/use-auto-refresh'
 import { AutoRefreshToggle } from '@/components/auto-refresh-toggle'
 import {
   LineChart,
   Line,
+  BarChart,
+  Bar,
+  ComposedChart,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
+  Cell,
+  LabelList
 } from 'recharts'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface AgentData {
   teamName: string
@@ -55,6 +64,16 @@ interface AgentData {
   monthlyTarget: number
   completionRate: number
   teamId: string
+}
+
+interface TeamTarget {
+  teamKey: string
+  teamName: string
+  month: string
+  targetCalls: number
+  targetConnected: number
+  targetSuccess: number
+  revenuePerSuccess: number
 }
 
 interface DailyDetail {
@@ -74,6 +93,14 @@ interface TeamSummary {
   avgSuccessPerAgent: number
   completionRate: number
   topPerformers: number
+}
+
+interface TeamStatsChartData {
+  teamName: string
+  targetValue: number
+  completedValue: number
+  completionRate: number
+  teamId: string
 }
 
 interface TeamDashboardData {
@@ -128,6 +155,13 @@ export default function TeamDashboardPage() {
   const [dailyData, setDailyData] = useState<DailyDetail[]>([])
   const [dailyLoading, setDailyLoading] = useState(false)
   const [expandedTeams, setExpandedTeams] = useState<Set<string>>(new Set())
+  
+  // 统计图表相关状态
+  const [activeChartTab, setActiveChartTab] = useState('bar')
+  const [chartSort, setChartSort] = useState<'completionRate' | 'targetValue' | 'completedValue'>('completionRate')
+  const [chartSortOrder, setChartSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [chartData, setChartData] = useState<TeamStatsChartData[]>([])
+  const [currentMonth, setCurrentMonth] = useState('')
 
   // 切换团队展开状态
   const toggleTeamExpand = (teamId: string) => {
@@ -178,7 +212,36 @@ export default function TeamDashboardPage() {
     }
   }
 
-  // Auto-refresh hook
+  // 加载统计图表数据（始终使用当前月份）
+  const loadChartData = async () => {
+    try {
+      // 计算当前月份的起止日期
+      const now = new Date()
+      const year = now.getFullYear()
+      const month = now.getMonth() + 1
+      const monthStart = `${year}-${String(month).padStart(2, '0')}-01`
+      const monthEnd = `${year}-${String(month).padStart(2, '0')}-${new Date(year, month, 0).getDate()}`
+      
+      const params = new URLSearchParams()
+      params.append('startDate', monthStart)
+      params.append('endDate', monthEnd)
+      
+      const response = await fetch(
+        `/api/reports/team/statistics?${params.toString()}`
+      )
+      const result = await response.json()
+      if (result.code === 200) {
+        setData(result.data)
+        if (result.data.teamList) {
+          setTeamList(result.data.teamList)
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch chart data:', error)
+    }
+  }
+
+  // Auto-refresh hook for chart data
   const {
     autoRefreshEnabled,
     setAutoRefreshEnabled,
@@ -189,9 +252,9 @@ export default function TeamDashboardPage() {
   } = useAutoRefresh({
     enabled: true,
     refreshInterval: 30000, // 30 seconds
-    fetchData,
-    startDate,
-    endDate,
+    fetchData: loadChartData, // 使用专门加载图表数据的函数
+    startDate: '', // 不使用页面的 startDate
+    endDate: '', // 不使用页面的 endDate
   })
 
   const fetchDailyData = async (agent: AgentData) => {
@@ -231,7 +294,7 @@ export default function TeamDashboardPage() {
   const handleExport = () => {
     if (!data?.agentDetails) return
     
-    const headers = ['外呼团队', '工号', '名称', '累计成交量', '成交目标', '完成率(%)']
+    const headers = ['外呼团队', '工号', '名称', '累计成交量', '成交目标', '完成率 (%)']
     const rows = data.agentDetails.map(agent => [
       agent.teamName,
       agent.agentCode,
@@ -247,6 +310,90 @@ export default function TeamDashboardPage() {
     link.href = URL.createObjectURL(blob)
     link.download = `团队看板_${data.dateRange.startDate}_${data.dateRange.endDate}.csv`
     link.click()
+  }
+
+  // 团队目标数据
+  const [teamTargets, setTeamTargets] = useState<TeamTarget[]>([])
+
+  // 加载团队目标数据
+  const loadTeamTargets = async (month: string) => {
+    try {
+      const params = new URLSearchParams({ month })
+      const res = await fetch(`/api/team-targets?${params.toString()}`)
+      const json = await res.json()
+      if (json.code === 0) {
+        setTeamTargets(json.data || [])
+      }
+    } catch (e) {
+      console.error('加载团队目标失败:', e)
+    }
+  }
+
+  // 处理图表数据
+  useEffect(() => {
+    if (teamTargets.length > 0 && data?.teamSummary) {
+      // 以团队目标数据为准，确保所有配置了目标的团队都显示
+      const chartData: TeamStatsChartData[] = teamTargets.map(target => {
+        // 从团队汇总数据中查找对应团队的完成量
+        const summary = data.teamSummary.find(s => s.teamName === target.teamName)
+        const completedValue = summary ? summary.totalMonthlySuccess : 0
+        const targetValue = target.targetSuccess
+        // 完成率 = 完成量 / 目标值
+        const completionRate = targetValue > 0 ? Number(((completedValue / targetValue) * 100).toFixed(1)) : 0
+        
+        return {
+          teamName: target.teamName,
+          targetValue,
+          completedValue,
+          completionRate,
+          teamId: summary?.teamId || target.teamKey
+        }
+      })
+      
+      // 排序
+      const sortedData = [...chartData].sort((a, b) => {
+        const aValue = a[chartSort]
+        const bValue = b[chartSort]
+        return chartSortOrder === 'desc' ? bValue - aValue : aValue - bValue
+      })
+      
+      setChartData(sortedData)
+    }
+  }, [data, teamTargets, currentMonth, chartSort, chartSortOrder])
+
+  // 当数据加载完成时，加载对应月份的目标数据
+  // 统计图表始终使用当前月份的数据，不受页面时间筛选器影响
+  useEffect(() => {
+    // 获取当前月份（YYYY-MM）
+    const now = new Date()
+    const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+    setCurrentMonth(currentMonthStr)
+    
+    // 加载当前月份的目标数据
+    loadTeamTargets(currentMonthStr)
+    
+    // 加载当前月份的统计数据（只在组件首次挂载时执行一次，不受页面查询按钮影响）
+    loadChartData()
+  }, [])
+
+  const handleSortChange = (field: 'completionRate' | 'targetValue' | 'completedValue') => {
+    if (chartSort === field) {
+      setChartSortOrder(chartSortOrder === 'desc' ? 'asc' : 'desc')
+    } else {
+      setChartSort(field)
+      setChartSortOrder('desc')
+    }
+  }
+
+  const getSortIcon = (field: 'completionRate' | 'targetValue' | 'completedValue') => {
+    if (chartSort !== field) return <SortAsc className="h-4 w-4 text-gray-300" />
+    return chartSortOrder === 'desc' ? <SortDesc className="h-4 w-4" /> : <SortAsc className="h-4 w-4" />
+  }
+
+  const getCompletionRateColor = (rate: number) => {
+    if (rate >= 100) return '#22c55e'
+    if (rate >= 80) return '#eab308'
+    return '#ef4444'
   }
 
   if (loading || !data) {
@@ -547,93 +694,219 @@ export default function TeamDashboardPage() {
         </Card>
       )}
 
-      {/* 数据明细表格 */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>坐席数据明细</CardTitle>
-            <CardDescription>
-              {data.dateRange.startDate} 至 {data.dateRange.endDate} 坐席外呼数据统计
-            </CardDescription>
+      {/* 各团队本月目标完成情况统计图表 */}
+      <Tabs value={activeChartTab} onValueChange={setActiveChartTab}>
+        <div className="flex items-center justify-between mb-4">
+          <TabsList>
+            <TabsTrigger value="bar">
+              <BarChart3 className="h-4 w-4 mr-2" />
+              柱状图
+            </TabsTrigger>
+            <TabsTrigger value="line">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              折线图
+            </TabsTrigger>
+          </TabsList>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleSortChange('completionRate')}
+              className="flex items-center gap-1"
+            >
+              {getSortIcon('completionRate')}
+              按完成率排序
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleSortChange('targetValue')}
+              className="flex items-center gap-1"
+            >
+              {getSortIcon('targetValue')}
+              按目标值排序
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleSortChange('completedValue')}
+              className="flex items-center gap-1"
+            >
+              {getSortIcon('completedValue')}
+              按完成量排序
+            </Button>
           </div>
-          <Button variant="outline" size="sm" onClick={handleExport}>
-            <Download className="h-4 w-4 mr-2" />
-            导出
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">序号</TableHead>
-                  <TableHead>外呼团队</TableHead>
-                  <TableHead>工号</TableHead>
-                  <TableHead>名称</TableHead>
-                  <TableHead className="text-right">累计成交量</TableHead>
-                  <TableHead className="text-right">成交目标</TableHead>
-                  <TableHead className="text-right">完成率(%)</TableHead>
-                  <TableHead className="text-center">操作</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.agentDetails.map((agent, index) => (
-                  <TableRow key={agent.agentCode}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Users2 className="h-4 w-4 text-blue-500" />
-                        <span className="font-medium">{agent.teamName}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{agent.agentCode}</Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">{agent.agentName}</TableCell>
-                    <TableCell className="text-right font-semibold text-green-600">
-                      {agent.monthlySuccess.toLocaleString()}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {agent.monthlyTarget.toLocaleString()}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Badge variant={agent.completionRate >= 100 ? 'default' : agent.completionRate >= 80 ? 'secondary' : 'destructive'}>
-                        {agent.completionRate.toFixed(1)}%
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => handleViewDetail(agent)}
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        查看详情
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {/* 合计行 */}
-                <TableRow className="bg-gray-50 dark:bg-gray-800 font-semibold">
-                  <TableCell></TableCell>
-                  <TableCell colSpan={3}>合计</TableCell>
-                  <TableCell className="text-right text-green-600">
-                    {data.agentDetails.reduce((sum, a) => sum + a.monthlySuccess, 0).toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {data.agentDetails.reduce((sum, a) => sum + a.monthlyTarget, 0).toLocaleString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {(data.agentDetails.reduce((sum, a) => sum + a.monthlySuccess, 0) / 
-                      data.agentDetails.reduce((sum, a) => sum + a.monthlyTarget, 0) * 100).toFixed(1)}%
-                  </TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+        </div>
+
+        {/* 统计摘要卡片 */}
+        {chartData.length > 0 && (
+          <div className="grid gap-4 md:grid-cols-4 mb-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">团队总数</CardTitle>
+                <Users2 className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{chartData.length}</div>
+                <p className="text-xs text-muted-foreground">配置目标的团队数量</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">总目标值</CardTitle>
+                <Target className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {chartData.reduce((sum, d) => sum + d.targetValue, 0).toLocaleString()}
+                </div>
+                <p className="text-xs text-muted-foreground">所有团队目标总和</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">总完成量</CardTitle>
+                <CheckCircle className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-green-600">
+                  {chartData.reduce((sum, d) => sum + d.completedValue, 0).toLocaleString()}
+                </div>
+                <p className="text-xs text-muted-foreground">实际累计成交量</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">平均完成率</CardTitle>
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">
+                  {(chartData.reduce((sum, d) => sum + d.completionRate, 0) / chartData.length).toFixed(1)}%
+                </div>
+                <p className="text-xs text-muted-foreground">所有团队平均完成率</p>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
+        )}
+
+        <TabsContent value="bar">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    各团队本月目标完成情况统计
+                  </CardTitle>
+                  <CardDescription>
+                    统计月份：{currentMonth} | 目标值来源于团队月度目标设定的目标成功量，完成量来源于实际累计成交量，完成率 = 完成量 / 目标值 × 100%
+                  </CardDescription>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <Target className="h-4 w-4" />
+                  <span>当前月份优先，不受时间筛选器影响</span>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={400}>
+                <ComposedChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey="teamName" 
+                    angle={-45}
+                    textAnchor="end"
+                    interval={0}
+                    height={80}
+                    tick={{ fontSize: 12 }}
+                  />
+                  <YAxis />
+                  <Tooltip 
+                    formatter={(value: number, name: string, props: any) => {
+                      if (name === '目标值') return [`${value.toLocaleString()} (目标)`, name]
+                      if (name === '完成量') {
+                        const variance = props.payload.completedValue - props.payload.targetValue
+                        const varianceText = variance >= 0 ? `+${variance.toLocaleString()}` : `-${Math.abs(variance).toLocaleString()}`
+                        return [`${value.toLocaleString()} (${varianceText})`, name]
+                      }
+                      return [value.toLocaleString(), name]
+                    }}
+                    labelFormatter={(label) => `${label} (${currentMonth})`}
+                  />
+                  <Legend />
+                  {/* 叠加柱状图：完成量和目标值 */}
+                  <Bar dataKey="completedValue" name="完成量" stackId="a" fill="#22c55e">
+                    <LabelList 
+                      dataKey="completedValue" 
+                      position="top" 
+                      formatter={(value: number) => value.toLocaleString()}
+                      style={{ fontSize: '12px', fontWeight: 'bold', fill: '#15803d' }}
+                    />
+                  </Bar>
+                  <Bar dataKey="targetValue" name="目标值" stackId="a" fill="#3b82f6" fillOpacity={0.6} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="line">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    各团队本月目标完成情况趋势
+                  </CardTitle>
+                  <CardDescription>
+                    统计月份：{currentMonth} | 目标值来源于团队月度目标设定的目标成功量，完成量来源于实际累计成交量，完成率 = 完成量 / 目标值 × 100%
+                  </CardDescription>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <TrendingUp className="h-4 w-4" />
+                  <span>当前月份优先，不受时间筛选器影响</span>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey="teamName" 
+                    angle={-45}
+                    textAnchor="end"
+                    interval={0}
+                    height={80}
+                    tick={{ fontSize: 12 }}
+                  />
+                  <YAxis yAxisId="left" label={{ value: '数量', angle: -90, position: 'insideLeft' }} />
+                  <YAxis yAxisId="right" orientation="right" unit="%" domain={[0, 150]} label={{ value: '完成率', angle: 90, position: 'insideRight' }} />
+                  <Tooltip 
+                    formatter={(value: number, name: string, props: any) => {
+                      if (name === '完成率') return [`${value.toFixed(1)}%`, name]
+                      if (name === '目标值') return [`${value.toLocaleString()} (目标)`, name]
+                      if (name === '完成量') {
+                        const variance = props.payload.completedValue - props.payload.targetValue
+                        const varianceText = variance >= 0 ? `+${variance.toLocaleString()}` : `-${Math.abs(variance).toLocaleString()}`
+                        return [`${value.toLocaleString()} (${varianceText})`, name]
+                      }
+                      return [value.toLocaleString(), name]
+                    }}
+                    labelFormatter={(label) => `${label} (${currentMonth})`}
+                  />
+                  <Legend />
+                  <Line yAxisId="left" type="monotone" dataKey="targetValue" name="目标值" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} />
+                  <Line yAxisId="left" type="monotone" dataKey="completedValue" name="完成量" stroke="#22c55e" strokeWidth={2} dot={{ r: 4 }} />
+                  <Line yAxisId="right" type="monotone" dataKey="completionRate" name="完成率" stroke="#eab308" strokeWidth={2} dot={{ r: 4 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* 详情弹窗 */}
       <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>

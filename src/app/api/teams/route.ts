@@ -53,8 +53,8 @@ export async function GET(request: NextRequest) {
       
       // 按日期排序，获取最新的团队数据文件
       teamFiles.sort((a, b) => {
-        const dateA = a.match(/qms_team_list_(\d{4}-\d{2}-\d{2})\.json/)?.[1]
-        const dateB = b.match(/qms_team_list_(\d{4}-\d{2}-\d{2})\.json/)?.[1]
+        const dateA = a.match(/qms_team_list_(\d{4}-\d{2}-\d{2})\.json/)?.[1] || ''
+        const dateB = b.match(/qms_team_list_(\d{4}-\d{2}-\d{2})\.json/)?.[1] || ''
         return dateB.localeCompare(dateA)
       })
       

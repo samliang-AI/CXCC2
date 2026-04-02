@@ -39,13 +39,13 @@ export default function OrdersPage() {
   }, [])
 
   // 订单数据状态
-  const [orders, setOrders] = useState([])
+  const [orders, setOrders] = useState<any[]>([])
   // 搜索功能
-  const [filteredOrders, setFilteredOrders] = useState([])
+  const [filteredOrders, setFilteredOrders] = useState<any[]>([])
   // 新增订单的状态
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [editingOrder, setEditingOrder] = useState(null)
+  const [editingOrder, setEditingOrder] = useState<any>(null)
   const [newOrder, setNewOrder] = useState({
     phone: '',
     city: '',
@@ -60,7 +60,7 @@ export default function OrdersPage() {
   })
 
   // 外呼团队选项
-  const [teamOptions, setTeamOptions] = useState([])
+  const [teamOptions, setTeamOptions] = useState<{ value: string; label: string }[]>([])
   // 分页状态
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
@@ -105,7 +105,7 @@ export default function OrdersPage() {
   })
   
   // 根据坐席工号和名称查询所属的外呼团队
-  const getAgentTeam = useCallback(async (agentId, agentName) => {
+  const getAgentTeam = useCallback(async (agentId: string, agentName: string) => {
     // 生成缓存键
     const cacheKey = `${agentId}-${agentName}`
     
@@ -166,6 +166,58 @@ export default function OrdersPage() {
     return Math.ceil(totalCount / pageSize)
   }
   
+/**
+ * 从API加载订单数据
+ * @param page 页码，默认为1
+ * @param pageSizeVal 每页大小，默认为当前pageSize状态值
+ * @returns Promise<void>
+ * 性能优化：使用useCallback缓存函数，避免因依赖变化重复创建
+ */
+  const fetchOrdersFromAPI = useCallback(async (page = 1, pageSizeVal = pageSize) => {
+    const startTime = performance.now()
+    try {
+      setLoading(true)
+      
+      // 构建查询参数
+      const params = new URLSearchParams()
+      params.append('startDate', filters.startDate)
+      params.append('endDate', filters.endDate)
+      params.append('phone', filters.phone)
+      params.append('businessType', filters.businessType)
+      params.append('city', filters.city)
+      params.append('team', filters.team)
+      params.append('page', page.toString())
+      params.append('pageSize', pageSizeVal.toString())
+      
+      const response = await fetch(`/api/orders?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      
+      if (data.code === 0) {
+        setOrders(data.data)
+        setFilteredOrders(data.data)
+        setCurrentPage(page)
+        setPageSize(data.pageSize)
+        setTotalCount(data.total)
+      }
+    } catch (error) {
+      console.error('从API加载订单数据失败:', error)
+    } finally {
+      setLoading(false)
+      const endTime = performance.now()
+      console.log(`订单数据加载时间: ${(endTime - startTime).toFixed(2)}ms`)
+    }
+  }, [filters, pageSize])
+  
   // 自动同步录音清单中客户状态为"成功客户"的数据
   const fetchSuccessCustomers = useCallback(async () => {
     try {
@@ -216,13 +268,13 @@ export default function OrdersPage() {
         })
         
         // 并行查询所有坐席的团队信息
-        const teamPromises = recordingsWithBasicData.map(recording => 
+        const teamPromises = recordingsWithBasicData.map((recording: any) => 
           getAgentTeam(recording.agentIdStr, recording.agentName)
         )
         const teams = await Promise.all(teamPromises)
         
         // 合并团队信息到订单数据
-        const ordersFromRecordings = recordingsWithBasicData.map((recording, index) => ({
+        const ordersFromRecordings = recordingsWithBasicData.map((recording: any, index: number) => ({
           ...recording,
           team: teams[index], // 使用并行查询的团队结果
           agentId: recording.agentId, // 恢复原始agentId类型
@@ -230,7 +282,7 @@ export default function OrdersPage() {
         }))
         
         // 移除临时字段
-        const finalOrders = ordersFromRecordings.map(({ agentIdStr, agentName, ...order }) => order)
+        const finalOrders = ordersFromRecordings.map(({ agentIdStr, agentName, ...order }: any) => order)
         
         // 批量保存到API
         const success = await saveOrdersToAPI(finalOrders, 'POST')
@@ -286,58 +338,6 @@ export default function OrdersPage() {
     fetchTeams()
   }, [])
   
-/**
- * 从API加载订单数据
- * @param page 页码，默认为1
- * @param pageSizeVal 每页大小，默认为当前pageSize状态值
- * @returns Promise<void>
- * 性能优化：使用useCallback缓存函数，避免因依赖变化重复创建
- */
-  const fetchOrdersFromAPI = useCallback(async (page = 1, pageSizeVal = pageSize) => {
-    const startTime = performance.now()
-    try {
-      setLoading(true)
-      
-      // 构建查询参数
-      const params = new URLSearchParams()
-      params.append('startDate', filters.startDate)
-      params.append('endDate', filters.endDate)
-      params.append('phone', filters.phone)
-      params.append('businessType', filters.businessType)
-      params.append('city', filters.city)
-      params.append('team', filters.team)
-      params.append('page', page.toString())
-      params.append('pageSize', pageSizeVal.toString())
-      
-      const response = await fetch(`/api/orders?${params.toString()}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      
-      const data = await response.json()
-      
-      if (data.code === 0) {
-        setOrders(data.data)
-        setFilteredOrders(data.data)
-        setCurrentPage(page)
-        setPageSize(data.pageSize)
-        setTotalCount(data.total)
-      }
-    } catch (error) {
-      console.error('从API加载订单数据失败:', error)
-    } finally {
-      setLoading(false)
-      const endTime = performance.now()
-      console.log(`订单数据加载时间: ${(endTime - startTime).toFixed(2)}ms`)
-    }
-  }, [filters, pageSize])
-  
   // 初始加载时从API获取订单数据并自动同步成功客户数据
   useEffect(() => {
     const initializeData = async () => {
@@ -363,7 +363,7 @@ export default function OrdersPage() {
   }, [])
   
   // 保存数据到API
-  const saveOrdersToAPI = async (orderData, method = 'POST') => {
+  const saveOrdersToAPI = async (orderData: any, method: string = 'POST') => {
     try {
       // 检查是否是批量请求
       if (Array.isArray(orderData)) {
@@ -383,7 +383,7 @@ export default function OrdersPage() {
         if (method === 'POST') {
           const existingOrders = await readOrdersFromAPI()
           // 根据手机号判断是否存在重复订单
-          const isDuplicate = existingOrders.some(order => 
+          const isDuplicate = existingOrders.some((order: any) =>
             order.phone === orderData.phone
           )
           if (isDuplicate) {
@@ -434,7 +434,7 @@ export default function OrdersPage() {
   }
   
   // 删除订单API
-  const deleteOrderFromAPI = async (id) => {
+  const deleteOrderFromAPI = async (id: string | number) => {
     try {
       const response = await fetch(`/api/orders?id=${id}`, {
         method: 'DELETE'
@@ -493,6 +493,7 @@ export default function OrdersPage() {
         plan: '',
         presetAmount: '',
         actualAmount: '',
+        discountAmount: '0',
         name: '',
         agentId: '',
         team: ''
@@ -503,7 +504,7 @@ export default function OrdersPage() {
   }
   
   // 删除订单
-  const handleDeleteOrder = async (id) => {
+  const handleDeleteOrder = async (id: string | number) => {
     const success = await deleteOrderFromAPI(id)
     if (success) {
       // 重新加载订单数据
@@ -514,8 +515,8 @@ export default function OrdersPage() {
   }
   
   // 编辑订单
-  const handleEditOrder = (id) => {
-    const order = orders.find(order => order.id === id)
+  const handleEditOrder = (id: string | number) => {
+    const order = orders.find((order: any) => order.id === id)
     if (order) {
       setEditingOrder(order)
       setIsEditModalOpen(true)
@@ -547,7 +548,7 @@ export default function OrdersPage() {
   }
   
   // 导入功能
-  const handleImport = (e) => {
+  const handleImport = (e: any) => {
     const file = e.target.files[0]
     if (!file) return
     
@@ -556,8 +557,10 @@ export default function OrdersPage() {
       // 处理CSV文件
       const reader = new FileReader()
       reader.onload = (event) => {
-        const csvData = event.target.result
-        parseCSV(csvData)
+        const csvData = (event.target as FileReader).result
+        if (csvData) {
+          parseCSV(csvData)
+        }
       }
       reader.readAsText(file)
     } else if (file.type.includes('excel') || file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
@@ -569,10 +572,11 @@ export default function OrdersPage() {
   }
   
   // 解析CSV文件
-  const parseCSV = async (csvData) => {
+  const parseCSV = async (csvData: string | ArrayBuffer) => {
     try {
-      const lines = csvData.split('\n')
-      const headers = lines[0].split(',').map(header => header.trim())
+      const dataString = typeof csvData === 'string' ? csvData : new TextDecoder().decode(csvData)
+      const lines = dataString.split('\n')
+      const headers = lines[0].split(',').map((header: string) => header.trim())
       
       // 检查CSV文件是否包含必要的列
       const requiredColumns = ['手机号', '项目名称', '业务类型', '方案', '原套餐金额', '现套餐金额', '坐席名称', '坐席工号', '外呼团队']
@@ -590,9 +594,9 @@ export default function OrdersPage() {
         if (!line) continue
         
         const values = line.split(',').map(value => value.trim())
-        const orderData = {}
+        const orderData: { [key: string]: string } = {}
         
-        headers.forEach((header, index) => {
+        headers.forEach((header: string, index: number) => {
           orderData[header] = values[index]
         })
         
@@ -790,7 +794,7 @@ export default function OrdersPage() {
       }
       
       // 准备更新数据
-      const updatedOrders = ordersToUpdate.map(order => {
+      const updatedOrders = ordersToUpdate.map((order: any) => {
         const updatedOrder = { ...order }
         updatedOrder[field] = newValue
         

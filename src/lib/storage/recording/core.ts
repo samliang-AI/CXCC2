@@ -1,74 +1,19 @@
-/**
- * 本地录音存储优化版本
- * 支持按日期分文件存储，提升性能
- * 
- * 文件命名规则:
- * - qms_recording_list_YYYY-MM-DD.json (按日期存储)
- * - qms_recording_list.json (兼容旧版，自动迁移)
- */
-
+// 录音存储核心功能模块
 import { mkdir, readFile, rename, stat, writeFile, readdir } from 'fs/promises'
 import path from 'path'
-
-export type LocalRecordingRow = {
-  uuid: string
-  company_id: number | null
-  project_id: number | null
-  task_id: number | null
-  agent: string | null
-  agent_name: string | null
-  calling_phone: string | null
-  called_phone: string | null
-  start_time: string | null
-  end_time: string | null
-  answer_duration: number | null
-  play_url: string | null
-  status: number | null
-  status_name: string | null
-  quality_status: number | null
-  sync_time: string
-  updated_at: string
-}
+import { LocalRecordingRow, RecordingReadOptions, UpsertOptions } from './types'
+import { getCachedData, setCachedData, clearCache } from './cache'
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'local-sync')
 const RECORDING_FILE = path.join(DATA_DIR, 'qms_recording_list_2026-03-22.json')
 
+// 写入队列，确保并发写入安全
 let recordingWriteQueue: Promise<void> = Promise.resolve()
-const jsonReadCache = new Map<
-  string,
-  {
-    mtimeMs: number
-    size: number
-    rows: unknown[]
-    lastAccess: number
-  }
->()
-
-// 缓存清理间隔（10分钟）
-const CACHE_CLEANUP_INTERVAL = 10 * 60 * 1000
-
-// 缓存最大条目数
-const MAX_CACHE_ENTRIES = 50
-
-// 启动缓存清理定时器
-setInterval(() => {
-  const now = Date.now()
-  const entries = Array.from(jsonReadCache.entries())
-  
-  // 按最后访问时间排序，删除最旧的条目
-  entries.sort((a, b) => a[1].lastAccess - b[1].lastAccess)
-  
-  // 只保留最近使用的MAX_CACHE_ENTRIES个条目
-  if (entries.length > MAX_CACHE_ENTRIES) {
-    const toRemove = entries.slice(0, entries.length - MAX_CACHE_ENTRIES)
-    toRemove.forEach(([key]) => jsonReadCache.delete(key))
-  }
-}, CACHE_CLEANUP_INTERVAL)
 
 /**
  * 从录音时间提取日期部分 (YYYY-MM-DD)
  */
-function extractDateFromStartTime(startTime: string | null): string | null {
+export function extractDateFromStartTime(startTime: string | null): string | null {
   if (!startTime) return null
   const match = startTime.match(/^(\d{4}-\d{2}-\d{2})/)
   return match ? match[1] : null
@@ -77,7 +22,7 @@ function extractDateFromStartTime(startTime: string | null): string | null {
 /**
  * 获取指定日期的文件路径
  */
-function getRecordingFilePath(date: string | null): string {
+export function getRecordingFilePath(date: string | null): string {
   if (!date) {
     return RECORDING_FILE
   }
@@ -87,7 +32,7 @@ function getRecordingFilePath(date: string | null): string {
 /**
  * 获取所有录音文件列表
  */
-async function getAllRecordingFiles(): Promise<string[]> {
+export async function getAllRecordingFiles(): Promise<string[]> {
   try {
     const files = await readdir(DATA_DIR)
     return files
@@ -108,19 +53,35 @@ async function sleep(ms: number): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-async function readJsonArray<T>(filePath: string, strict = false): Promise<T[]> {
+/**
+ * 安全解析JSON数组
+ */
+export function parseJsonArraySafely<T>(raw: string): { rows: T[]; recovered: boolean } {
+  const text = raw.trim()
+  if (!text) return { rows: [], recovered: false }
+  
+  try {
+    const parsed = JSON.parse(text)
+    return { rows: Array.isArray(parsed) ? (parsed as T[]) : [], recovered: false }
+  } catch {
+    // 简化处理，实际应该实现 extractFirstJsonSegment
+    return { rows: [], recovered: false }
+  }
+}
+
+/**
+ * 读取JSON数组文件
+ */
+export async function readJsonArray<T>(filePath: string, strict = false): Promise<T[]> {
   const maxRetries = strict ? 5 : 2
   let lastError: unknown = null
   
   for (let i = 0; i < maxRetries; i++) {
     try {
-      const fileStat = await stat(filePath)
-      const cached = jsonReadCache.get(filePath)
-      
-      if (cached && cached.mtimeMs === fileStat.mtimeMs && cached.size === fileStat.size) {
-        // 更新最后访问时间
-        cached.lastAccess = Date.now()
-        return cached.rows as T[]
+      // 检查缓存
+      const cachedData = await getCachedData<T>(filePath)
+      if (cachedData) {
+        return cachedData
       }
       
       const raw = await readFile(filePath, 'utf-8')
@@ -128,17 +89,13 @@ async function readJsonArray<T>(filePath: string, strict = false): Promise<T[]> 
       
       const { rows } = parseJsonArraySafely<T>(raw)
       
-      jsonReadCache.set(filePath, {
-        mtimeMs: fileStat.mtimeMs,
-        size: fileStat.size,
-        rows: rows as unknown[],
-        lastAccess: Date.now()
-      })
+      // 设置缓存
+      await setCachedData(filePath, rows)
       
       return rows
     } catch (error) {
       if (error && typeof error === 'object' && 'code' in error && (error as { code?: string }).code === 'ENOENT') {
-        jsonReadCache.delete(filePath)
+        clearCache(filePath)
         return []
       }
       
@@ -153,15 +110,21 @@ async function readJsonArray<T>(filePath: string, strict = false): Promise<T[]> 
   return []
 }
 
-async function writeJsonArray<T>(filePath: string, rows: T[]): Promise<void> {
+/**
+ * 写入JSON数组文件
+ */
+export async function writeJsonArray<T>(filePath: string, rows: T[]): Promise<void> {
   await ensureDir()
   const tmpPath = `${filePath}.tmp`
   await writeFile(tmpPath, JSON.stringify(rows, null, 2), 'utf-8')
   await rename(tmpPath, filePath)
-  jsonReadCache.delete(filePath)
+  clearCache(filePath)
 }
 
-async function withQueue<T>(fn: () => Promise<T>): Promise<T> {
+/**
+ * 队列处理，确保并发写入安全
+ */
+export async function withQueue<T>(fn: () => Promise<T>): Promise<T> {
   const task = recordingWriteQueue.then(fn, fn)
   const cleanup = task.then(
     () => undefined,
@@ -174,7 +137,7 @@ async function withQueue<T>(fn: () => Promise<T>): Promise<T> {
 /**
  * 按日期分组录音数据
  */
-function groupByDate(rows: LocalRecordingRow[]): Map<string, LocalRecordingRow[]> {
+export function groupByDate(rows: LocalRecordingRow[]): Map<string, LocalRecordingRow[]> {
   const grouped = new Map<string, LocalRecordingRow[]>()
   
   for (const row of rows) {
@@ -194,11 +157,7 @@ function groupByDate(rows: LocalRecordingRow[]): Map<string, LocalRecordingRow[]
  * 从所有文件中读取录音数据
  * 支持日期范围过滤
  */
-export async function readAllLocalRecordings(options?: {
-  startDate?: string
-  endDate?: string
-  batchSize?: number
-}): Promise<{ rows: LocalRecordingRow[]; files: string[] }> {
+export async function readAllLocalRecordings(options?: RecordingReadOptions): Promise<{ rows: LocalRecordingRow[]; files: string[] }> {
   const { startDate, endDate, batchSize = 10000 } = options || {}
   const loadedFiles: string[] = []
   
@@ -302,11 +261,7 @@ export async function readAllLocalRecordings(options?: {
 /**
  * 读取指定日期范围的录音清单数据
  */
-export async function readLocalRecordingsByDateRange(options?: {
-  startDate?: string
-  endDate?: string
-  batchSize?: number
-}): Promise<LocalRecordingRow[]> {
+export async function readLocalRecordingsByDateRange(options?: RecordingReadOptions): Promise<LocalRecordingRow[]> {
   const { startDate, endDate, batchSize = 10000 } = options || {}
   const files = await getAllRecordingFiles()
   const allRows: LocalRecordingRow[] = []
@@ -380,7 +335,7 @@ export async function readLocalRecordingsByDateRange(options?: {
  */
 export async function upsertLocalRecordings(
   rows: LocalRecordingRow[],
-  options?: { batchSize?: number, writeBatchSize?: number, onlyAddNew?: boolean }
+  options?: UpsertOptions
 ): Promise<number> {
   return withQueue(async () => {
     const batchSize = options?.batchSize ?? Number(process.env.SYNC_LOCAL_UPSERT_BATCH_SIZE || '10000')
@@ -451,132 +406,4 @@ export async function upsertLocalRecordings(
     
     return totalUpserted
   })
-}
-
-/**
- * 迁移旧版数据到按日期分文件
- */
-export async function migrateOldRecordingData(): Promise<{
-  migrated: boolean
-  fileCount: number
-  totalRows: number
-}> {
-  try {
-    const oldRows = await readJsonArray<LocalRecordingRow>(RECORDING_FILE, false)
-    
-    if (oldRows.length === 0) {
-      return { migrated: false, fileCount: 0, totalRows: 0 }
-    }
-    
-    // 按日期分组并写入新文件
-    await upsertLocalRecordings(oldRows)
-    
-    // 备份旧文件
-    const backupPath = `${RECORDING_FILE}.backup.${Date.now()}`
-    await rename(RECORDING_FILE, backupPath)
-    
-    const grouped = groupByDate(oldRows)
-    
-    return {
-      migrated: true,
-      fileCount: grouped.size,
-      totalRows: oldRows.length,
-    }
-  } catch (error) {
-    console.error('Migration failed:', error)
-    return { migrated: false, fileCount: 0, totalRows: 0 }
-  }
-}
-
-/**
- * 清理指定日期之前的录音文件
- */
-export async function cleanupOldRecordings(beforeDate: string): Promise<{
-  deletedFiles: number
-  deletedRows: number
-}> {
-  const files = await getAllRecordingFiles()
-  let deletedFiles = 0
-  let deletedRows = 0
-  
-  for (const file of files) {
-    const match = file.match(/qms_recording_list_(\d{4}-\d{2}-\d{2})\.json$/)
-    if (!match) continue
-    
-    const fileDate = match[1]
-    
-    if (fileDate < beforeDate) {
-      const rows = await readJsonArray<LocalRecordingRow>(file, false)
-      deletedRows += rows.length
-      
-      // 删除文件
-      const fs = await import('fs/promises')
-      await fs.unlink(file)
-      
-      jsonReadCache.delete(file)
-      deletedFiles++
-    }
-  }
-  
-  return { deletedFiles, deletedRows }
-}
-
-/**
- * 获取存储统计信息
- */
-export async function getRecordingStorageStats(): Promise<{
-  totalFiles: number
-  totalRows: number
-  dateRange: {
-    earliest: string | null
-    latest: string | null
-  }
-  fileSize: number
-}> {
-  const files = await getAllRecordingFiles()
-  let totalRows = 0
-  let totalSize = 0
-  let earliest: string | null = null
-  let latest: string | null = null
-  
-  for (const file of files) {
-    const match = file.match(/qms_recording_list_(\d{4}-\d{2}-\d{2})\.json$/)
-    if (!match) continue
-    
-    const fileDate = match[1]
-    
-    if (!earliest || fileDate < earliest) earliest = fileDate
-    if (!latest || fileDate > latest) latest = fileDate
-    
-    try {
-      const fileStat = await stat(file)
-      totalSize += fileStat.size
-      
-      const rows = await readJsonArray<LocalRecordingRow>(file, false)
-      totalRows += rows.length
-    } catch {
-      // 忽略读取失败的文件
-    }
-  }
-  
-  return {
-    totalFiles: files.length,
-    totalRows,
-    dateRange: { earliest, latest },
-    fileSize: totalSize,
-  }
-}
-
-// Helper functions (需要补充完整)
-function parseJsonArraySafely<T>(raw: string): { rows: T[]; recovered: boolean } {
-  const text = raw.trim()
-  if (!text) return { rows: [], recovered: false }
-  
-  try {
-    const parsed = JSON.parse(text)
-    return { rows: Array.isArray(parsed) ? (parsed as T[]) : [], recovered: false }
-  } catch {
-    // 简化处理，实际应该实现 extractFirstJsonSegment
-    return { rows: [], recovered: false }
-  }
 }

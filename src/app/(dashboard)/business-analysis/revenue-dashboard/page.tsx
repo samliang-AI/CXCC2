@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function RevenueDashboardPage() {
   // 状态
-  const [orders, setOrders] = useState([])
+  const [orders, setOrders] = useState<any[]>([])
   const [ordersTotal, setOrdersTotal] = useState(0)
   const [date, setDate] = useState('')
   const [startDate, setStartDate] = useState('')
@@ -16,21 +16,25 @@ export default function RevenueDashboardPage() {
   // 静默刷新状态（用于自动刷新，不显示加载指示器）
   const [silentLoading, setSilentLoading] = useState(false)
   // 通话清单数据状态（用于外呼量）
-  const [callLogs, setCallLogs] = useState([])
+  const [callLogs, setCallLogs] = useState<any[]>([])
   const [callLogsTotal, setCallLogsTotal] = useState(0)
   // 录音清单数据状态（用于接通量）
-  const [recordings, setRecordings] = useState([])
+  const [recordings, setRecordings] = useState<any[]>([])
   // 录音总数量状态（用于接通量）
   const [recordingsTotal, setRecordingsTotal] = useState(0)
   // 数据缓存
-  const [dataCache, setDataCache] = useState({
+  const [dataCache, setDataCache] = useState<{
+    orders: { [key: string]: { data: any[]; total: number } };
+    callLogs: { [key: string]: { data: any[]; total: number } };
+    recordings: { [key: string]: { data: any[]; total: number } };
+  }>({
     orders: {},
     callLogs: {},
     recordings: {}
   })
 
   // 计算时间范围的辅助函数
-  const getDateRange = (rangeType) => {
+  const getDateRange = (rangeType: string) => {
     const now = new Date()
     let start, end
     
@@ -66,7 +70,7 @@ export default function RevenueDashboardPage() {
     }
     
     // 获取本地时区的日期字符串，确保格式为 YYYY-MM-DD
-    const getLocalDateString = (date) => {
+    const getLocalDateString = (date: Date) => {
       const year = date.getFullYear()
       const month = String(date.getMonth() + 1).padStart(2, '0')
       const day = String(date.getDate()).padStart(2, '0')
@@ -162,7 +166,7 @@ export default function RevenueDashboardPage() {
   }, [])
 
   // 从API获取业务订单数据
-  const fetchOrders = useCallback(async (startDate, endDate) => {
+  const fetchOrders = useCallback(async (startDate: string, endDate: string) => {
     if (!startDate || !endDate) return
     
     // 检查缓存
@@ -207,7 +211,7 @@ export default function RevenueDashboardPage() {
   }, [dataCache.orders])
 
   // 从API获取通话清单数据（用于外呼量）
-  const fetchCallLogs = useCallback(async (startDate, endDate) => {
+  const fetchCallLogs = useCallback(async (startDate: string, endDate: string) => {
     if (!startDate || !endDate) return
     
     // 检查缓存
@@ -253,7 +257,7 @@ export default function RevenueDashboardPage() {
   }, [dataCache.callLogs])
 
   // 从API获取录音清单数据（用于接通量）
-  const fetchRecordings = useCallback(async (startDate, endDate) => {
+  const fetchRecordings = useCallback(async (startDate: string, endDate: string) => {
     if (!startDate || !endDate) return
     
     // 检查缓存
@@ -334,7 +338,7 @@ export default function RevenueDashboardPage() {
     silentRefresh()
     
     // 如果启用了自动刷新，设置30秒定时器
-    let intervalId
+    let intervalId: NodeJS.Timeout | undefined
     if (autoRefresh) {
       intervalId = setInterval(() => {
         silentRefresh()
@@ -375,8 +379,8 @@ export default function RevenueDashboardPage() {
     const connectedCount = recordingsTotal
 
     // 计算各外呼团队收益（差额总和）
-    const teamRevenue = {}
-    orders.forEach(order => {
+    const teamRevenue: { [key: string]: number } = {}
+    orders.forEach((order: any) => {
       const team = order.team || '未知团队'
       if (!teamRevenue[team]) {
         teamRevenue[team] = 0
@@ -385,8 +389,8 @@ export default function RevenueDashboardPage() {
     })
 
     // 计算各项目名称收益（差额总和）
-    const projectRevenue = {}
-    orders.forEach(order => {
+    const projectRevenue: { [key: string]: number } = {}
+    orders.forEach((order: any) => {
       const project = order.city || order.projectName || '未知项目'
       if (!projectRevenue[project]) {
         projectRevenue[project] = 0
@@ -405,7 +409,7 @@ export default function RevenueDashboardPage() {
   }, [orders, ordersTotal, startDate, endDate, callLogsTotal, recordingsTotal])
 
   // 时间范围快捷选择
-  const handleQuickRange = (rangeType) => {
+  const handleQuickRange = (rangeType: string) => {
     const now = new Date()
     let start, end
     
@@ -441,7 +445,7 @@ export default function RevenueDashboardPage() {
     }
     
     // 获取本地时区的日期字符串，确保格式为 YYYY-MM-DD
-    const getLocalDateString = (date) => {
+    const getLocalDateString = (date: Date) => {
       const year = date.getFullYear()
       const month = String(date.getMonth() + 1).padStart(2, '0')
       const day = String(date.getDate()).padStart(2, '0')
