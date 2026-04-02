@@ -8,8 +8,6 @@ import { readLocalAgents, readLocalRecordingsRaw, readLocalTeams, readLocalRecor
 import { getCachedQueryResult, getRouteCacheTtlMs } from '@/lib/route-query-cache'
 import { getRecordingDailySummary, getRecordingDailySummaryByDateRange } from '@/lib/daily-aggregate-store'
 
-export const dynamic = 'force-dynamic'
-
 function formatDateLocal(d: Date): string {
   const yyyy = d.getFullYear()
   const mm = String(d.getMonth() + 1).padStart(2, '0')

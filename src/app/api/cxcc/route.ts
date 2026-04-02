@@ -8,8 +8,6 @@ import {
   mapCxccRecordToRecording
 } from '@/lib/cxcc-agent-record-list'
 import { upsertLocalCallLogs } from '@/lib/local-call-log-store-optimized'
-
-export const dynamic = 'force-dynamic'
 import { upsertLocalRecordings } from '@/lib/local-recording-store-optimized'
 
 function normalizePath(p: string): string {
