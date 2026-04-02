@@ -2,15 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs/promises'
 import path from 'path'
 
-export const dynamic = 'force-dynamic'
-
 const DATA_DIR = path.join(process.cwd(), 'data', 'local-sync')
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const agentId = searchParams.get('agentId')
-    const agentName = searchParams.get('agentName')
+    // 使用 searchParams 直接获取查询参数，避免使用 request.url
+    const agentId = request.nextUrl.searchParams.get('agentId')
+    const agentName = request.nextUrl.searchParams.get('agentName')
 
     if (!agentId && !agentName) {
       return NextResponse.json({

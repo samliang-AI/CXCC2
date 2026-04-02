@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { readFile, writeFile, access, mkdir } from 'fs/promises'
 import path from 'path'
 
-export const dynamic = 'force-dynamic'
-
 const DATA_DIR = path.join(process.cwd(), 'data')
 const ORDERS_FILE = path.join(DATA_DIR, 'orders.json')
 
@@ -59,20 +57,20 @@ async function saveOrders(orders: any[]) {
 // GET - 获取订单（支持筛选和分页）
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    // 使用 request.nextUrl.searchParams 直接获取查询参数，避免使用 request.url
     
     // 提取筛选参数
-    const date = searchParams.get('date')
-    const startDate = searchParams.get('startDate')
-    const endDate = searchParams.get('endDate')
-    const phone = searchParams.get('phone')
-    const businessType = searchParams.get('businessType')
-    const city = searchParams.get('city')
-    const team = searchParams.get('team')
+    const date = request.nextUrl.searchParams.get('date')
+    const startDate = request.nextUrl.searchParams.get('startDate')
+    const endDate = request.nextUrl.searchParams.get('endDate')
+    const phone = request.nextUrl.searchParams.get('phone')
+    const businessType = request.nextUrl.searchParams.get('businessType')
+    const city = request.nextUrl.searchParams.get('city')
+    const team = request.nextUrl.searchParams.get('team')
     
     // 提取分页参数
-    const page = parseInt(searchParams.get('page') || '1')
-    const pageSize = parseInt(searchParams.get('pageSize') || '10')
+    const page = parseInt(request.nextUrl.searchParams.get('page') || '1')
+    const pageSize = parseInt(request.nextUrl.searchParams.get('pageSize') || '10')
     
     const orders = await readOrders()
     

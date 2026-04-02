@@ -828,9 +828,9 @@ async function fetchDashboardFromDailySummary(startDate: Date, endDate: Date): P
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const startDateStr = searchParams.get('startDate')
-    const endDateStr = searchParams.get('endDate')
+    // 使用 request.nextUrl.searchParams 直接获取查询参数，避免使用 request.url
+    const startDateStr = request.nextUrl.searchParams.get('startDate')
+    const endDateStr = request.nextUrl.searchParams.get('endDate')
 
     let startDate = parseDateParam(startDateStr) ?? new Date()
     let endDate = parseDateParam(endDateStr) ?? new Date()

@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { readLocalRecordingsByDateRange } from '@/lib/local-recording-store-optimized'
 
-export const dynamic = 'force-dynamic'
-
 async function handleList(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const startDate = searchParams.get('startDate')
-    const endDate = searchParams.get('endDate')
+    // 使用 request.nextUrl.searchParams 直接获取查询参数，避免使用 request.url
+    const startDate = request.nextUrl.searchParams.get('startDate')
+    const endDate = request.nextUrl.searchParams.get('endDate')
 
     if (!startDate || !endDate) {
       return NextResponse.json(
@@ -37,9 +35,9 @@ async function handleList(request: NextRequest) {
 
 async function handleSuccessCustomers(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const startDate = searchParams.get('startDate')
-    const endDate = searchParams.get('endDate')
+    // 使用 request.nextUrl.searchParams 直接获取查询参数，避免使用 request.url
+    const startDate = request.nextUrl.searchParams.get('startDate')
+    const endDate = request.nextUrl.searchParams.get('endDate')
 
     if (!startDate || !endDate) {
       return NextResponse.json(
@@ -72,8 +70,8 @@ async function handleSuccessCustomers(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const action = searchParams.get('action')
+  // 使用 request.nextUrl.searchParams 直接获取查询参数，避免使用 request.url
+  const action = request.nextUrl.searchParams.get('action')
 
   switch (action) {
     case 'list':

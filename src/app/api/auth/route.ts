@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { clearAuth } from '@/lib/auth/config'
 
-export const dynamic = 'force-dynamic'
-
 async function handleLogin(request: NextRequest) {
   try {
     const body = await request.json()
@@ -81,8 +79,8 @@ async function handleLogout() {
 }
 
 export async function POST(request: NextRequest) {
-  const { searchParams } = new URL(request.url)
-  const action = searchParams.get('action')
+  // 使用 request.nextUrl.searchParams 直接获取查询参数，避免使用 request.url
+  const action = request.nextUrl.searchParams.get('action')
 
   switch (action) {
     case 'login':

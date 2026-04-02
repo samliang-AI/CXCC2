@@ -3,8 +3,6 @@ import path from 'path'
 import { readFile, writeFile, mkdir } from 'fs/promises'
 import { existsSync } from 'fs'
 
-export const dynamic = 'force-dynamic'
-
 const DATA_DIR = path.join(process.cwd(), 'data', 'project-revenues')
 
 // 确保数据目录存在
@@ -22,8 +20,8 @@ function getRevenueFilePath(month: string) {
 // GET - 获取项目收益配置数据
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const month = searchParams.get('month')
+    // 使用 request.nextUrl.searchParams 直接获取查询参数，避免使用 request.url
+    const month = request.nextUrl.searchParams.get('month')
     
     console.log('[项目收益 API-GET] 请求月份:', month)
     
